@@ -1,0 +1,254 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─────────────────────────────────────────────────────────────
+   Design tokens
+   Edit these to re-theme the whole site.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Color — light */
+  --background: #f3f1ec;
+  --foreground: #141412;
+  --muted: #6d6a63;
+  --subtle: #a6a39b;
+  --border: rgb(20 20 18 / 0.12);
+  --border-strong: rgb(20 20 18 / 0.28);
+  --surface: #eae7e0;
+  --surface-strong: #dfdbd2;
+  --accent: #e0461f;
+  --accent-foreground: #ffffff;
+  --selection: rgb(224 70 31 / 0.18);
+
+  /* Typography */
+  --fs-display: clamp(2.75rem, 7.6vw, 8.75rem);
+  --fs-h1: clamp(2.5rem, 6vw, 6.25rem);
+  --fs-h2: clamp(2rem, 4.4vw, 4.5rem);
+  --fs-h3: clamp(1.5rem, 2.6vw, 2.5rem);
+  --fs-lead: clamp(1.125rem, 1.45vw, 1.375rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.6875rem;
+  --tracking-display: -0.052em;
+  --tracking-heading: -0.038em;
+  --tracking-label: 0.09em;
+
+  /* Spacing */
+  --gutter: clamp(1.25rem, 3.6vw, 3.5rem);
+  --section-y: clamp(5.5rem, 11vw, 10.5rem);
+  --nav-h: 4.5rem;
+  --case-hero-h: 56svh;
+  --max-w: 1600px;
+
+  /* Radius — intentionally small */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-full: 999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --duration-fast: 180ms;
+  --duration-medium: 420ms;
+  --duration-slow: 800ms;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --case-hero-h: 64svh;
+    --nav-h: 5rem;
+  }
+}
+
+.dark {
+  --background: #0e0e0d;
+  --foreground: #ecebe6;
+  --muted: #8e8b84;
+  --subtle: #5c5a55;
+  --border: rgb(236 235 230 / 0.1);
+  --border-strong: rgb(236 235 230 / 0.26);
+  --surface: #171716;
+  --surface-strong: #22221f;
+  --accent: #ff6a42;
+  --accent-foreground: #0e0e0d;
+  --selection: rgb(255 106 66 / 0.28);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --text-display: var(--fs-display);
+  --text-display--line-height: 0.92;
+  --text-display--letter-spacing: var(--tracking-display);
+  --text-h1: var(--fs-h1);
+  --text-h1--line-height: 0.95;
+  --text-h1--letter-spacing: var(--tracking-display);
+  --text-h2: var(--fs-h2);
+  --text-h2--line-height: 1;
+  --text-h2--letter-spacing: var(--tracking-heading);
+  --text-h3: var(--fs-h3);
+  --text-h3--line-height: 1.08;
+  --text-h3--letter-spacing: var(--tracking-heading);
+  --text-lead: var(--fs-lead);
+  --text-lead--line-height: 1.45;
+  --text-body: var(--fs-body);
+  --text-body--line-height: 1.6;
+  --text-small: var(--fs-small);
+  --text-small--line-height: 1.5;
+  --text-label: var(--fs-label);
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: var(--tracking-label);
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+
+  --ease-out: var(--ease-out);
+  --ease-in-out: var(--ease-in-out);
+  --ease-spring: var(--ease-spring);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Base
+   ───────────────────────────────────────────────────────────── */
+
+@layer base {
+  html {
+    background: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    font-feature-settings: "ss01", "cv11";
+    transition: background-color var(--duration-medium) var(--ease-out),
+      color var(--duration-medium) var(--ease-out);
+  }
+
+  ::selection {
+    background: var(--selection);
+    color: var(--foreground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+
+  section[id] {
+    scroll-margin-top: calc(var(--nav-h) + 1rem);
+  }
+
+  img {
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Utilities
+   ───────────────────────────────────────────────────────────── */
+
+@utility container-x {
+  width: 100%;
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: 1.3;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+@utility section-y {
+  padding-block: var(--section-y);
+}
+
+@utility hairline {
+  border-color: var(--border);
+}
+
+/* Link underline that draws in from the left */
+@utility link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size var(--duration-medium) var(--ease-out);
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+/* Custom cursor hides the native one only on fine pointers */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+
+/* Marquee */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Hide horizontal scrollbar for drag galleries while keeping them scrollable */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}
