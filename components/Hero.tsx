@@ -1,95 +1,196 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { Fragment, useEffect, useId, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { site } from "@/data/site";
-import { projects } from "@/data/projects";
 import { scrollToTarget } from "@/lib/scroll";
-import { EASE_OUT, pad } from "@/lib/utils";
+import { EASE_OUT, cn } from "@/lib/utils";
+import { useI18n } from "./LanguageProvider";
 import { MagneticButton } from "./MagneticButton";
 import { TextReveal } from "./TextReveal";
 
+const TOUCH_DISMISS_MS = 3500;
+const PHRASE_HOLD_MS = 2800;
+
+/**
+ * Inline photo in the headline. Hover (mouse), focus (keyboard) or tap (touch) opens a greeting bubble.
+ * The bubble is absolutely positioned, so opening it never shifts the headline.
+ */
 function InlinePortrait() {
-  return (
-    <span
-      aria-hidden
-      className="relative inline-block h-[0.74em] w-[1.3em] -translate-y-[0.04em] overflow-hidden rounded-full bg-surface align-middle transition-[width] duration-[var(--duration-slow)] ease-[var(--ease-out)] hover:w-[1.9em]"
-    >
-      <Image
-        src={site.about.portrait.src}
-        alt=""
-        fill
-        priority
-        sizes="(min-width: 768px) 240px, 120px"
-        className="object-cover object-[50%_30%] grayscale"
-      />
-    </span>
-  );
-}
-
-function Underlined({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="relative inline-block">
-      {children}
-      <motion.svg
-        aria-hidden
-        viewBox="0 0 300 20"
-        preserveAspectRatio="none"
-        className="absolute -bottom-[0.06em] left-0 h-[0.14em] w-[92%] overflow-visible text-accent"
-      >
-        <motion.path
-          d="M2 14 C 60 4, 140 4, 200 10 S 280 16, 298 6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="5"
-          strokeLinecap="round"
-          vectorEffect="non-scaling-stroke"
-          style={{ strokeWidth: "max(2px, 0.05em)" }}
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 0.9, ease: EASE_OUT, delay: 1.1 }}
-        />
-      </motion.svg>
-    </span>
-  );
-}
-
-function Ticker() {
-  const words = site.hero.ticker;
-  const [i, setI] = useState(0);
+  const { t } = useI18n();
   const reduce = useReducedMotion();
+  const [open, setOpen] = useState(false);
+  const [wave, setWave] = useState(0);
+  const ref = useRef<HTMLButtonElement>(null);
+  const timer = useRef<number | undefined>(undefined);
+  const pointer = useRef("mouse");
+  const bubbleId = useId();
+
+  const show = () => {
+    if (!open) setWave((n) => n + 1);
+    setOpen(true);
+  };
+  const hide = () => {
+    window.clearTimeout(timer.current);
+    setOpen(false);
+  };
 
   useEffect(() => {
-    if (reduce) return;
-    const id = setInterval(() => setI((n) => (n + 1) % words.length), 2400);
-    return () => clearInterval(id);
-  }, [reduce, words.length]);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && hide();
+    const onDown = (e: PointerEvent) => {
+      if (!ref.current?.contains(e.target as Node)) hide();
+    };
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onDown);
+    };
+  }, [open]);
+
+  useEffect(() => () => window.clearTimeout(timer.current), []);
 
   return (
-    <span className="inline-flex h-11 items-center gap-2">
-      <span className="text-muted">Curious by default —</span>
-      <span className="relative block h-[1.3em] min-w-[11em] overflow-hidden">
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span
-            key={words[i]}
-            className="absolute left-0 top-0 whitespace-nowrap leading-[1.3em]"
-            initial={{ y: "100%", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: "-100%", opacity: 0 }}
-            transition={{ duration: 0.5, ease: EASE_OUT }}
-          >
-            {words[i]}
-          </motion.span>
-        </AnimatePresence>
+    <button
+      ref={ref}
+      type="button"
+      aria-label={t.hero.portraitLabel}
+      aria-expanded={open}
+      aria-describedby={bubbleId}
+      data-cursor="link"
+      onPointerDown={(e) => (pointer.current = e.pointerType)}
+      onPointerEnter={(e) => e.pointerType === "mouse" && show()}
+      onPointerLeave={(e) => e.pointerType === "mouse" && hide()}
+      onFocus={(e) => e.currentTarget.matches(":focus-visible") && show()}
+      onBlur={hide}
+      onClick={(e) => {
+        const type = e.detail === 0 ? "keyboard" : pointer.current;
+        if (type === "mouse") return;
+        if (open) return hide();
+        show();
+        if (type !== "keyboard") {
+          window.clearTimeout(timer.current);
+          timer.current = window.setTimeout(() => setOpen(false), TOUCH_DISMISS_MS);
+        }
+      }}
+      className="group relative mx-[0.04em] inline-block h-[0.74em] w-[1.3em] -translate-y-[0.04em] rounded-full align-middle"
+    >
+      <span className="absolute inset-0 overflow-hidden rounded-full bg-surface">
+        <Image
+          src={site.portrait.src}
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 768px) 240px, 120px"
+          className={cn(
+            "object-cover object-[50%_30%] transition-[filter,scale] duration-[var(--duration-slow)] ease-[var(--ease-out)]",
+            open ? "scale-[1.06] grayscale-0" : "grayscale",
+          )}
+        />
+      </span>
+
+      <motion.span
+        id={bubbleId}
+        role="tooltip"
+        initial={{ opacity: 0, y: 8, scale: 0.92, visibility: "hidden" }}
+        animate={
+          open
+            ? { opacity: 1, y: 0, scale: 1, visibility: "visible" }
+            : { opacity: 0, y: 8, scale: 0.92, transitionEnd: { visibility: "hidden" } }
+        }
+        transition={reduce ? { duration: 0.15 } : { type: "spring", stiffness: 520, damping: 30, mass: 0.7 }}
+        className="pointer-events-none absolute bottom-[calc(100%+10px)] start-[42%] z-10 flex origin-bottom-left items-center gap-2 whitespace-nowrap rounded-2xl rounded-es-sm bg-foreground px-3.5 py-2 text-(length:--fs-greeting) leading-snug font-medium tracking-normal text-background shadow-[0_10px_30px_-12px_rgb(0_0_0/0.45)] rtl:origin-bottom-right"
+      >
+        <span key={wave} aria-hidden className={cn("text-[1.1em] leading-none", open && !reduce && "wave")}>
+          👋
+        </span>
+        <span>{t.hero.greeting}</span>
+        <span aria-hidden className="absolute -bottom-[5px] start-2.5 size-2.5 rotate-45 rounded-[2px] bg-foreground" />
+      </motion.span>
+    </button>
+  );
+}
+
+/** Renders a headline line, replacing `{portrait}` with the photo. */
+function HeadlineLine({ text }: { text: string }) {
+  return text
+    .split(/(\{portrait\})/)
+    .filter(Boolean)
+    .map((part, i) => {
+      if (part === "{portrait}") return <InlinePortrait key={i} />;
+      return <Fragment key={i}>{part}</Fragment>;
+    });
+}
+
+/**
+ * Editorial rotating closer. Invisible copies of every phrase lock the slot to the longest line,
+ * so the Hero never jumps. Reduced motion still advances the phrase, without the vertical move.
+ */
+function RotatingPhrase({ phrases }: { phrases: readonly string[] }) {
+  const [i, setI] = useState(0);
+  const reduce = useReducedMotion();
+  const current = phrases[i % phrases.length] ?? phrases[0];
+
+  useEffect(() => {
+    if (phrases.length < 2) return;
+    const id = window.setInterval(() => setI((n) => (n + 1) % phrases.length), PHRASE_HOLD_MS);
+    return () => window.clearInterval(id);
+  }, [phrases.length]);
+
+  return (
+    <span className="relative mx-auto grid max-w-full justify-items-center">
+      {phrases.map((phrase) => (
+        <span key={phrase} aria-hidden className="invisible col-start-1 row-start-1 max-w-full text-balance">
+          {phrase}
+        </span>
+      ))}
+
+      <span className="hero-phrase-root relative col-start-1 row-start-1 block h-full w-full overflow-hidden">
+        {reduce ? (
+          <span className="hero-phrase block max-w-full text-balance">{current}</span>
+        ) : (
+          <AnimatePresence initial={false}>
+            <motion.span
+              key={current}
+              className="absolute inset-0 flex items-center justify-center text-center"
+              initial={{ y: "0.38em", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "-0.38em", opacity: 0 }}
+              transition={{ duration: 0.55, ease: EASE_OUT }}
+            >
+              <span className="hero-phrase text-balance">{current}</span>
+            </motion.span>
+          </AnimatePresence>
+        )}
       </span>
     </span>
   );
 }
 
+/** Quiet cue at the foot of the Hero. Opacity breathes; scrolling fades it out. */
+function ScrollCue({ label }: { label: string }) {
+  const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  const opacity = useTransform(scrollY, [0, 48], [1, 0]);
+
+  return (
+    <motion.div style={{ opacity }} className="pointer-events-none flex shrink-0 justify-center pt-8">
+      <p data-safe className={cn("label flex flex-col items-center gap-2 text-muted", reduce ? "opacity-40" : "scroll-cue")}>
+        {label}
+        <span aria-hidden className="text-[0.875rem] leading-none">
+          ↓
+        </span>
+      </p>
+    </motion.div>
+  );
+}
+
 export function Hero() {
-  const { hero } = site;
+  const { t } = useI18n();
+  const { hero } = t;
+  const headingId = useId();
 
   const toWork = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -98,89 +199,55 @@ export function Hero() {
 
   return (
     <section
-      aria-label="Introduction"
-      className="container-x relative flex min-h-[100svh] flex-col pb-8 pt-[calc(var(--nav-h)+2.5rem)] md:pb-10"
+      id="hero"
+      aria-label={hero.label}
+      className="container-x relative z-[1] flex min-h-[100svh] flex-col pt-[calc(var(--nav-h)+var(--space-7))] pb-[max(1.5rem,env(safe-area-inset-bottom))] md:pt-[calc(var(--nav-h)+var(--space-8))] md:pb-10 lg:pt-[calc(var(--nav-h)+var(--space-9))] lg:pb-12"
     >
-      <motion.div
-        className="label flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-muted"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.1 }}
-      >
-        <span>
-          {site.role} <span className="text-subtle">/</span> 7+ years
-        </span>
-        <a
-          href={hero.currently.href}
-          target="_blank"
-          rel="noreferrer"
-          className="group inline-flex h-11 items-center gap-2"
+      <div className="flex flex-1 flex-col items-center justify-center text-center">
+        <div data-safe className="relative z-10 flex flex-col items-center">
+        <motion.p
+          className="label text-muted"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
         >
-          <span className="relative flex size-2">
-            <span className="absolute inset-0 animate-ping rounded-full bg-accent/60" />
-            <span className="relative size-2 rounded-full bg-accent" />
-          </span>
-          <span>
-            Currently designing at <span className="text-foreground link-draw">{hero.currently.company}</span>
-          </span>
-          <ArrowUpRight aria-hidden className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </a>
-      </motion.div>
+          {hero.eyebrow}
+        </motion.p>
 
-      <div className="flex flex-1 flex-col justify-center py-12 md:py-16">
+        <span id={headingId} hidden>
+          {hero.headlineText}
+        </span>
         <TextReveal
           as="h1"
           trigger="mount"
           delay={0.15}
           stagger={0.1}
-          ariaLabel={hero.lines.join(" ")}
-          className="text-display font-medium"
+          labelledBy={headingId}
+          className="mt-4 max-w-[22ch] text-[length:var(--fs-hero)] leading-[var(--lh-hero)] font-medium tracking-[var(--tracking-display)] text-balance md:max-w-[24ch]"
+          lineClassName="max-lg:whitespace-normal"
           lines={[
-            <>
-              I <InlinePortrait /> turn complex
-            </>,
-            <>
-              products into <Underlined>simple,</Underlined>
-            </>,
-            <>useful experiences.</>,
+            ...hero.headline.map((line, i) => <HeadlineLine key={i} text={line} />),
+            <RotatingPhrase key="rotating" phrases={hero.rotating} />,
           ]}
         />
-      </div>
 
-      <motion.div
-        className="grid gap-y-8 md:grid-cols-12 md:items-end"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.65 }}
-      >
-        <p className="max-w-[44ch] text-lead text-muted md:col-span-6 lg:col-span-5">{hero.supporting}</p>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 md:col-span-6 md:justify-end lg:col-span-5 lg:col-start-8">
-          <MagneticButton href="/#work" onClick={toWork}>
-            View work
+        <motion.div
+          className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.65 }}
+        >
+          <MagneticButton href="/#work" variant="hero" onClick={toWork}>
+            {hero.viewWork}
           </MagneticButton>
           <MagneticButton href="/#contact" variant="text" onClick={(e) => (e.preventDefault(), scrollToTarget("#contact"))}>
-            Let&apos;s talk
+            {hero.letsTalk}
           </MagneticButton>
+        </motion.div>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="label mt-12 flex items-center justify-between gap-6 border-t border-border pt-4 text-[0.68rem] md:mt-16"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.9 }}
-      >
-        <Ticker />
-        <button
-          type="button"
-          onClick={() => scrollToTarget("#work")}
-          className="group hidden h-11 items-center gap-2 uppercase text-muted hover:text-foreground sm:inline-flex"
-        >
-          Scroll
-          <ArrowDown aria-hidden className="size-3 transition-transform duration-500 group-hover:translate-y-0.5" />
-        </button>
-        <span className="hidden text-muted md:inline">({pad(projects.length)}) Selected projects</span>
-      </motion.div>
+      <ScrollCue label={hero.scrollDown} />
     </section>
   );
 }

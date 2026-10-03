@@ -4,8 +4,10 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Check, Copy } from "lucide-react";
 import { site } from "@/data/site";
+import { useI18n } from "./LanguageProvider";
 
 export function CopyEmail() {
+  const { t } = useI18n();
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -20,7 +22,11 @@ export function CopyEmail() {
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <a href={site.links.email} className="link-draw text-[clamp(1.25rem,2.4vw,2.25rem)] font-medium tracking-[-0.03em]">
+      <a
+        href={site.links.email}
+        dir="ltr"
+        className="link-draw text-[clamp(1.25rem,2.4vw,2.25rem)] font-medium tracking-[-0.03em]"
+      >
         {site.email}
       </a>
       <button
@@ -38,12 +44,12 @@ export function CopyEmail() {
             transition={{ duration: 0.2 }}
           >
             {copied ? <Check aria-hidden className="size-3.5" /> : <Copy aria-hidden className="size-3.5" />}
-            {copied ? "Copied" : "Copy"}
+            {copied ? t.copyEmail.copied : t.copyEmail.copy}
           </motion.span>
         </AnimatePresence>
       </button>
       <span role="status" aria-live="polite" className="sr-only">
-        {copied ? "Email address copied to clipboard" : ""}
+        {copied ? t.copyEmail.status : ""}
       </span>
     </div>
   );

@@ -3,14 +3,15 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { caseHeroHeight } from "@/lib/hero";
 import { lockScroll } from "@/lib/scroll";
 import { EASE_IN_OUT } from "@/lib/utils";
 
 type Rect = { top: number; left: number; width: number; height: number };
 
-type StartOptions = { href: string; src: string; rect: DOMRect };
+type StartOptions = { href: string; src: string; rect: DOMRect; ratio: number; tone: string };
 
-type Transition = { href: string; src: string; from: Rect; to: Rect; phase: "expand" | "out" };
+type Transition = { href: string; src: string; tone: string; from: Rect; to: Rect; pad: number; phase: "expand" | "out" };
 
 type ContextValue = {
   start: (opts: StartOptions) => void;
@@ -25,24 +26,27 @@ const ProjectTransitionContext = createContext<ContextValue>({
 
 export const useProjectTransition = () => useContext(ProjectTransitionContext);
 
-/** Measures where the case-study hero image sits (see CaseHero), without rendering the page. */
-function measureHeroRect(): Rect {
+/** Measures where the case-study hero frame sits (see CaseHero), without rendering the page. */
+function measureHero(ratio: number): { rect: Rect; pad: number } {
   const outer = document.createElement("div");
   outer.className = "container-x";
   outer.style.cssText = "position:fixed;left:0;right:0;top:var(--nav-h);visibility:hidden;pointer-events:none;";
   const inner = document.createElement("div");
-  inner.style.height = "var(--case-hero-h)";
+  inner.style.height = caseHeroHeight(ratio);
+  inner.style.paddingTop = "var(--case-hero-pad)";
   outer.appendChild(inner);
   document.body.appendChild(outer);
   const r = inner.getBoundingClientRect();
+  const pad = parseFloat(getComputedStyle(inner).paddingTop) || 0;
   outer.remove();
-  return { top: r.top, left: r.left, width: r.width, height: r.height };
+  return { rect: { top: r.top, left: r.left, width: r.width, height: r.height }, pad };
 }
 
 /**
  * Shared-element transition between a project thumbnail and its case-study hero.
- * The clicked image is cloned into a fixed overlay, expanded to the hero's position while
+ * The clicked image is cloned into a fixed overlay, expanded to the hero's frame while
  * the route loads underneath, then faded out once the real hero image is ready.
+ * The image is always contained, so it never crops mid-flight.
  */
 export function ProjectTransitionProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -60,17 +64,20 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
   }, [finish]);
 
   const start = useCallback(
-    ({ href, src, rect }: StartOptions) => {
+    ({ href, src, rect, ratio, tone }: StartOptions) => {
       if (reduce) {
         router.push(href);
         return;
       }
       flags.current = { expanded: false, ready: false };
+      const hero = measureHero(ratio);
       setT({
         href,
         src,
+        tone,
         from: { top: rect.top, left: rect.left, width: rect.width, height: rect.height },
-        to: measureHeroRect(),
+        to: hero.rect,
+        pad: hero.pad,
         phase: "expand",
       });
       lockScroll(true);
@@ -110,8 +117,9 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
             key="shared-image"
             aria-hidden
             className="pointer-events-none fixed z-[70] overflow-hidden"
-            initial={{ ...t.from, opacity: 1 }}
-            animate={t.phase === "out" ? { ...t.to, opacity: 0 } : { ...t.to, opacity: 1 }}
+            style={{ background: t.tone }}
+            initial={{ ...t.from, padding: 0, opacity: 1 }}
+            animate={t.phase === "out" ? { ...t.to, padding: t.pad, opacity: 0 } : { ...t.to, padding: t.pad, opacity: 1 }}
             transition={
               t.phase === "out"
                 ? { duration: 0.4, delay: 0.2, ease: "easeOut" }
@@ -128,7 +136,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
               }
             }}
           >
-            <img src={t.src} alt="" className="size-full object-cover" />
+            <img src={t.src} alt="" className="size-full object-contain" />
           </motion.div>
         ) : null}
       </AnimatePresence>

@@ -1,40 +1,13 @@
+import type { Dictionary } from "./translations";
+
+/** Language-independent facts. All copy lives in `translations.ts`. */
 export const site = {
-  name: "Anas Adel",
-  role: "Senior Product Designer",
   url: "https://anasadel.framer.website",
   email: "anassaddel@gmail.com",
-  description:
-    "Anas Adel is a Senior Product Designer turning complex products into simple, useful experiences — across fintech, loyalty, marketplaces and SaaS, for B2B and B2C.",
 
-  hero: {
-    lines: ["I turn complex", "products into simple,", "useful experiences."],
-    supporting:
-      "Senior Product Designer with 7+ years designing B2B and B2C products across fintech, loyalty, marketplaces and SaaS — in MENA and the US.",
-    // From the original Framer hero: "Create things. Solve problems. Explore ideas. Build products. Keep growing."
-    ticker: ["Create things.", "Solve problems.", "Explore ideas.", "Build products.", "Keep growing."],
-    currently: { company: "Resal", href: "https://www.resal.me/" },
-  },
+  portrait: { src: "/images/about/anas-portrait.png", width: 1239, height: 1269 },
 
-  about: {
-    greeting: ["Hello,", "I'm Anas."],
-    paragraphs: [
-      "I'm a Senior Product Designer focused on turning complex products into simple, useful experiences. With 7+ years of experience across MENA and the US, I've worked across fintech, loyalty, marketplaces, and B2B and B2C products — from early research and product strategy to design systems and shipped experiences.",
-      "I care about understanding the problem before designing the solution, working closely with product and engineering teams, and creating experiences that are not only clear and intuitive, but also drive real business impact.",
-    ],
-    portrait: {
-      src: "/images/about/anas-portrait.png",
-      width: 1239,
-      height: 1269,
-      alt: "Black and white portrait of Anas Adel smiling, arms crossed",
-    },
-    stats: [
-      { value: 7, suffix: "+", label: "Years in product design" },
-      { value: 5, suffix: "", label: "Companies", pad: true },
-    ],
-    regions: ["MENA", "US"],
-    audiences: ["B2B", "B2C"],
-    industries: ["Fintech", "Loyalty", "Marketplaces", "SaaS"],
-  },
+  stats: { years: 7, companies: 5 },
 
   links: {
     email: "mailto:anassaddel@gmail.com",
@@ -42,30 +15,31 @@ export const site = {
     substack: "https://substack.com/@anasadel",
     cv: "https://drive.google.com/file/d/1NRyGgqohc9bjp_dRhFT3cVIWcXpD5VMl/view?usp=sharing",
     call: "https://cal.com/anas.adel/30min",
-    // [CONTENT NEEDED] The Framer site shows "Dribbble" without a URL, and no X/Twitter profile.
-    // Add them here and they'll appear in Contact + Footer automatically.
+    // Add profile URLs here and they appear in Contact and the menu automatically.
     dribbble: "",
     x: "",
   },
 
   nav: [
-    { id: "work", label: "Work", href: "/#work" },
-    { id: "about", label: "About", href: "/#about" },
-    { id: "experience", label: "Experience", href: "/#experience" },
-    { id: "contact", label: "Contact", href: "/#contact" },
+    { id: "work", href: "/#work" },
+    { id: "about", href: "/#about" },
+    { id: "experience", href: "/experience" },
+    { id: "contact", href: "/#contact" },
   ],
 } as const;
 
-export type SocialLink = { label: string; href: string; external?: boolean };
+export type NavId = (typeof site.nav)[number]["id"];
 
-export function socialLinks(): SocialLink[] {
+export type SocialLink = { id: keyof Dictionary["social"]; label: string; href: string };
+
+export function socialLinks(t: Dictionary): SocialLink[] {
   const { links } = site;
   const list: SocialLink[] = [
-    { label: "LinkedIn", href: links.linkedin, external: true },
-    { label: "Substack", href: links.substack, external: true },
+    { id: "linkedin", label: t.social.linkedin, href: links.linkedin },
+    { id: "substack", label: t.social.substack, href: links.substack },
   ];
-  if (links.dribbble) list.push({ label: "Dribbble", href: links.dribbble, external: true });
-  if (links.x) list.push({ label: "X", href: links.x, external: true });
-  list.push({ label: "CV", href: links.cv, external: true });
+  if (links.dribbble) list.push({ id: "dribbble", label: t.social.dribbble, href: links.dribbble });
+  if (links.x) list.push({ id: "x", label: t.social.x, href: links.x });
+  list.push({ id: "cv", label: t.social.cv, href: links.cv });
   return list;
 }

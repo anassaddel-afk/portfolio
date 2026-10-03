@@ -16,6 +16,8 @@ type TextRevealProps = {
   /** "mount" animates on load (hero), "view" when scrolled into view. */
   trigger?: "mount" | "view";
   ariaLabel?: string;
+  /** Names the element from another node while keeping its content (e.g. interactive parts) accessible. */
+  labelledBy?: string;
 };
 
 const line: Variants = {
@@ -37,6 +39,7 @@ export function TextReveal({
   stagger = 0.09,
   trigger = "view",
   ariaLabel,
+  labelledBy,
 }: TextRevealProps) {
   const Comp = motion[as];
   const container: Variants = {
@@ -48,6 +51,7 @@ export function TextReveal({
     <Comp
       className={className}
       aria-label={ariaLabel}
+      aria-labelledby={labelledBy}
       variants={container}
       initial="hidden"
       animate={trigger === "mount" ? "show" : undefined}
@@ -58,7 +62,7 @@ export function TextReveal({
         <motion.span
           key={i}
           variants={line}
-          aria-hidden={ariaLabel ? true : undefined}
+          aria-hidden={ariaLabel || labelledBy ? true : undefined}
           className={cn("js-reveal block will-change-[transform,filter]", lineClassName)}
         >
           {content}

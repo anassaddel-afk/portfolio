@@ -9,15 +9,16 @@ import { cn } from "@/lib/utils";
 type Props = {
   href: string;
   children: ReactNode;
-  variant?: "solid" | "outline" | "text";
+  variant?: "solid" | "hero" | "outline" | "text";
   external?: boolean;
   className?: string;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 const styles = {
-  solid: "h-12 px-6 rounded-full bg-foreground text-background hover:bg-accent hover:text-accent-foreground",
-  outline: "h-12 px-6 rounded-full border border-border-strong hover:border-foreground",
+  solid: "h-12 px-6 rounded-full bg-accent-fill text-accent-foreground hover:bg-accent-hover",
+  hero: "cta-hero h-12 px-6 rounded-full",
+  outline: "h-12 px-6 rounded-full border border-border-strong hover:border-accent hover:text-accent",
   text: "h-11 px-1",
 };
 
@@ -27,12 +28,12 @@ export function MagneticButton({ href, children, variant = "solid", external, cl
 
   const content = (
     <>
-      <span className="label text-[0.75rem]">{children}</span>
+      <span className="label text-(length:--fs-button)">{children}</span>
       <Icon
         aria-hidden
         className={cn(
-          "size-4 transition-transform duration-[var(--duration-medium)] ease-[var(--ease-out)]",
-          external ? "group-hover:-translate-y-0.5 group-hover:translate-x-0.5" : "group-hover:translate-x-1.5",
+          "size-4 transition-[translate] duration-[var(--duration-medium)] ease-[var(--ease-out)] rtl:-scale-x-100",
+          external ? "group-hover:-translate-y-0.5 group-hover:nudge-0.5" : "group-hover:nudge-1.5",
         )}
         strokeWidth={1.5}
       />

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "./LanguageProvider";
 
 type CursorKind = "default" | "link" | "project" | "image" | "drag" | "hidden";
 
@@ -15,18 +16,13 @@ const SIZES: Record<CursorKind, number> = {
   hidden: 0,
 };
 
-const DEFAULT_LABELS: Partial<Record<CursorKind, string>> = {
-  project: "View",
-  image: "Open",
-  drag: "Drag",
-};
-
 /**
  * Desktop-only cursor. Elements opt into states with
  *   data-cursor="project | image | drag | link | hidden"  and optional  data-cursor-label="…"
  * Links and buttons get the "link" state automatically.
  */
 export function Cursor() {
+  const { t } = useI18n();
   const [enabled, setEnabled] = useState(false);
   const [kind, setKind] = useState<CursorKind>("default");
   const [label, setLabel] = useState<string | undefined>();
@@ -93,7 +89,8 @@ export function Cursor() {
   if (!enabled) return null;
 
   const size = SIZES[kind];
-  const text = label ?? DEFAULT_LABELS[kind];
+  const defaults: Partial<Record<CursorKind, string>> = { project: t.cursor.view, image: t.cursor.open, drag: t.cursor.drag };
+  const text = label ?? defaults[kind];
   const filled = kind === "project" || kind === "image" || kind === "drag" || kind === "default";
 
   return (
@@ -120,7 +117,7 @@ export function Cursor() {
           {text && size > 40 ? (
             <motion.span
               key={text}
-              className="label text-center text-[10px] leading-tight text-background"
+              className="label px-1 text-center text-(length:--fs-cursor) leading-tight text-background"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}

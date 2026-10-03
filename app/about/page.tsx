@@ -3,11 +3,12 @@ import { AboutSection } from "@/components/AboutSection";
 import { CapabilitiesSection } from "@/components/CapabilitiesSection";
 import { ContactSection } from "@/components/ContactSection";
 import { PrinciplesSection } from "@/components/PrinciplesSection";
+import { getDictionary } from "@/lib/locale";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: "Anas Adel is a Senior Product Designer focused on turning complex products into simple, useful experiences.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getDictionary();
+  return { title: t.aboutPage.metaTitle, description: t.aboutPage.metaDescription };
+}
 
 export default function AboutPage() {
   return (

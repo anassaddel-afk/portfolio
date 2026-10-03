@@ -5,14 +5,15 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import { site, socialLinks } from "@/data/site";
+import { site, socialLinks, type NavId } from "@/data/site";
 import { lockScroll, scrollToTarget } from "@/lib/scroll";
 import { EASE_IN_OUT, EASE_OUT, cn, pad } from "@/lib/utils";
+import { useI18n } from "./LanguageProvider";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useNavExtension } from "./NavExtension";
 import { ThemeToggle } from "./ThemeToggle";
 
-type SectionId = (typeof site.nav)[number]["id"];
-
-function routeSection(pathname: string): SectionId | null {
+function routeSection(pathname: string): NavId | null {
   if (pathname.startsWith("/work")) return "work";
   if (pathname.startsWith("/about")) return "about";
   if (pathname.startsWith("/experience")) return "experience";
@@ -20,11 +21,14 @@ function routeSection(pathname: string): SectionId | null {
 }
 
 export function Navbar() {
+  const { t } = useI18n();
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState<SectionId | null>(null);
+  const [active, setActive] = useState<NavId | null>(null);
   const [open, setOpen] = useState(false);
+  const extension = useNavExtension();
+  const compact = scrolled || extension.active;
 
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (v) => {
@@ -43,7 +47,7 @@ export function Navbar() {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) setActive(entry.target.id as SectionId);
+          if (entry.isIntersecting) setActive(entry.target.id as NavId);
         }
       },
       { rootMargin: "-45% 0px -50% 0px" },
@@ -56,6 +60,8 @@ export function Navbar() {
 
   const onNav = (e: React.MouseEvent, id: string) => {
     setOpen(false);
+    const item = site.nav.find((n) => n.id === id);
+    if (!item?.href.includes("#")) return;
     if (!isHome) return;
     e.preventDefault();
     scrollToTarget(`#${id}`);
@@ -71,82 +77,83 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header id="site-header" data-safe className="fixed inset-x-0 top-0 z-50">
       <div
         className={cn(
           "container-x transition-[padding] duration-[var(--duration-slow)] ease-[var(--ease-out)]",
-          scrolled ? "pt-3" : "pt-0",
+          compact ? "pt-3" : "pt-0",
         )}
       >
-        <nav
-          aria-label="Primary"
+        <div
           className={cn(
-            "flex items-center justify-between border transition-[height,padding,background-color,border-color,border-radius] duration-[var(--duration-slow)] ease-[var(--ease-out)]",
-            scrolled
-              ? "h-14 rounded-[var(--radius-md)] border-border bg-background/75 px-3 backdrop-blur-xl md:px-5"
-              : "h-[var(--nav-h)] border-transparent px-0",
+            "border transition-[background-color,border-color,border-radius] duration-[var(--duration-slow)] ease-[var(--ease-out)]",
+            compact ? "rounded-[var(--radius-md)] border-border bg-background/75 backdrop-blur-xl" : "border-transparent",
           )}
         >
-          <Link href="/" onClick={onHome} className="label flex h-11 items-center gap-2 text-[0.75rem]">
-            <span className="font-medium">Anas Adel</span>
-            <span
-              className={cn(
-                "hidden text-muted transition-opacity duration-500 lg:inline",
-                scrolled && "lg:opacity-0",
-              )}
-            >
-              — {site.role}
-            </span>
-          </Link>
+          <nav
+            aria-label={t.nav.label}
+            className={cn(
+              "flex items-center justify-between transition-[height,padding] duration-[var(--duration-slow)] ease-[var(--ease-out)]",
+              compact ? "h-14 px-3 md:px-5" : "h-[var(--nav-h)] px-0",
+            )}
+          >
+            <Link href="/" onClick={onHome} aria-label={t.nav.home} className="label flex h-11 items-center font-medium text-(length:--fs-nav)">
+              {t.name}
+            </Link>
 
-          <ul className="hidden items-center gap-1 md:flex">
-            {site.nav.map((item) => {
-              const isActive = active === item.id;
-              return (
-                <li key={item.id}>
-                  <Link
-                    href={item.href}
-                    onClick={(e) => onNav(e, item.id)}
-                    aria-current={isActive ? "true" : undefined}
-                    className={cn(
-                      "label relative flex h-11 items-center px-3 text-[0.72rem] transition-colors duration-300",
-                      isActive ? "text-foreground" : "text-muted hover:text-foreground",
-                    )}
-                  >
-                    {item.label}
-                    {isActive ? (
-                      <motion.span
-                        layoutId="nav-indicator"
-                        className="absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-accent"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
-                    ) : null}
-                  </Link>
-                </li>
-              );
-            })}
-            <li className="ml-2 border-l border-border pl-2">
+            <ul className="hidden items-center gap-1 md:flex">
+              {site.nav.map((item) => {
+                const isActive = active === item.id;
+                return (
+                  <li key={item.id}>
+                    <Link
+                      href={item.href}
+                      onClick={(e) => onNav(e, item.id)}
+                      aria-current={isActive ? "true" : undefined}
+                      className={cn(
+                        "label relative flex h-11 items-center px-3 text-(length:--fs-nav) transition-colors duration-300",
+                        isActive ? "text-foreground" : "text-muted hover:text-foreground",
+                      )}
+                    >
+                      {t.nav.items[item.id]}
+                      {isActive ? (
+                        <motion.span
+                          layoutId="nav-indicator"
+                          className="absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-accent"
+                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                        />
+                      ) : null}
+                    </Link>
+                  </li>
+                );
+              })}
+              <li className="ms-2 flex items-center gap-1 border-s border-border ps-3">
+                <LanguageSwitcher />
+                <ThemeToggle />
+              </li>
+            </ul>
+
+            <div className="flex items-center md:hidden">
+              <LanguageSwitcher className="me-0.5" />
               <ThemeToggle />
-            </li>
-          </ul>
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                aria-expanded={open}
+                aria-controls="mobile-menu"
+                className="label flex h-11 items-center gap-2 ps-2 pe-1 text-(length:--fs-nav)"
+              >
+                {t.nav.menu}
+                <span aria-hidden className="flex flex-col gap-[3px]">
+                  <span className="block h-px w-4 bg-current" />
+                  <span className="block h-px w-4 bg-current" />
+                </span>
+              </button>
+            </div>
+          </nav>
 
-          <div className="flex items-center md:hidden">
-            <ThemeToggle />
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              className="label flex h-11 items-center gap-2 px-2 text-[0.75rem]"
-            >
-              Menu
-              <span aria-hidden className="flex flex-col gap-[3px]">
-                <span className="block h-px w-4 bg-current" />
-                <span className="block h-px w-4 bg-current" />
-              </span>
-            </button>
-          </div>
-        </nav>
+          <div ref={extension.setSlot} className="md:hidden" />
+        </div>
       </div>
 
       <MobileMenu open={open} onClose={() => setOpen(false)} active={active} onNav={onNav} onHome={onHome} />
@@ -157,12 +164,13 @@ export function Navbar() {
 type MobileMenuProps = {
   open: boolean;
   onClose: () => void;
-  active: SectionId | null;
+  active: NavId | null;
   onNav: (e: React.MouseEvent, id: string) => void;
   onHome: (e: React.MouseEvent) => void;
 };
 
 function MobileMenu({ open, onClose, active, onNav, onHome }: MobileMenuProps) {
+  const { t } = useI18n();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -186,7 +194,7 @@ function MobileMenu({ open, onClose, active, onNav, onHome }: MobileMenuProps) {
           id="mobile-menu"
           role="dialog"
           aria-modal="true"
-          aria-label="Menu"
+          aria-label={t.nav.menu}
           className="fixed inset-0 z-[60] flex flex-col bg-background md:hidden"
           initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
           animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
@@ -194,20 +202,15 @@ function MobileMenu({ open, onClose, active, onNav, onHome }: MobileMenuProps) {
           transition={{ duration: 0.6, ease: EASE_IN_OUT }}
         >
           <div className="container-x flex h-[var(--nav-h)] items-center justify-between">
-            <Link href="/" onClick={onHome} className="label flex h-11 items-center text-[0.75rem] font-medium">
-              Anas Adel
+            <Link href="/" onClick={onHome} className="label flex h-11 items-center text-(length:--fs-nav) font-medium">
+              {t.name}
             </Link>
-            <button
-              ref={closeRef}
-              type="button"
-              onClick={onClose}
-              className="label flex h-11 items-center px-2 text-[0.75rem]"
-            >
-              Close
+            <button ref={closeRef} type="button" onClick={onClose} className="label flex h-11 items-center px-2 text-(length:--fs-nav)">
+              {t.nav.close}
             </button>
           </div>
 
-          <nav aria-label="Mobile" className="container-x mt-10 flex-1">
+          <nav aria-label={t.nav.mobileLabel} className="container-x mt-10 flex-1">
             <ul className="flex flex-col">
               {site.nav.map((item, i) => (
                 <motion.li
@@ -222,8 +225,8 @@ function MobileMenu({ open, onClose, active, onNav, onHome }: MobileMenuProps) {
                     onClick={(e) => onNav(e, item.id)}
                     className="flex min-h-[4.5rem] items-baseline justify-between py-4"
                   >
-                    <span className="text-h2 font-medium">{item.label}</span>
-                    <span className={cn("label", active === item.id ? "text-accent" : "text-muted")}>{pad(i + 1)}</span>
+                    <span className="text-h2 font-medium">{t.nav.items[item.id]}</span>
+                    <span className={cn("label tabular-nums", active === item.id ? "text-accent" : "text-muted")}>{pad(i + 1)}</span>
                   </Link>
                 </motion.li>
               ))}
@@ -236,20 +239,15 @@ function MobileMenu({ open, onClose, active, onNav, onHome }: MobileMenuProps) {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
-            <a href={site.links.email} className="text-lead">
+            <a href={site.links.email} dir="ltr" className="text-lead self-start">
               {site.email}
             </a>
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
-              {socialLinks().map((l) => (
-                <li key={l.label}>
-                  <a
-                    href={l.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="label flex h-11 items-center gap-1 text-muted"
-                  >
+              {socialLinks(t).map((l) => (
+                <li key={l.id}>
+                  <a href={l.href} target="_blank" rel="noreferrer" className="label flex h-11 items-center gap-1 text-muted">
                     {l.label}
-                    <ArrowUpRight aria-hidden className="size-3" strokeWidth={1.5} />
+                    <ArrowUpRight aria-hidden className="size-3 rtl:-scale-x-100" strokeWidth={1.5} />
                   </a>
                 </li>
               ))}

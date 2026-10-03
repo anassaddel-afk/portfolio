@@ -3,27 +3,100 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Thmanyah (ثمانية) — Arabic only. Latin falls through to Geist. */
+@font-face {
+  font-family: Thmanyah;
+  src: url("./fonts/thmanyah/thmanyah-sans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-089F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+1EE00-1EEFF;
+}
+@font-face {
+  font-family: Thmanyah;
+  src: url("./fonts/thmanyah/thmanyah-sans-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-089F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+1EE00-1EEFF;
+}
+@font-face {
+  font-family: Thmanyah;
+  src: url("./fonts/thmanyah/thmanyah-sans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-089F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+1EE00-1EEFF;
+}
+@font-face {
+  font-family: "Thmanyah Display";
+  src: url("./fonts/thmanyah/thmanyah-serif-display-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-089F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+1EE00-1EEFF;
+}
+@font-face {
+  font-family: "Thmanyah Display";
+  src: url("./fonts/thmanyah/thmanyah-serif-display-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-089F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+1EE00-1EEFF;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ─────────────────────────────────────────────────────────────
    Design tokens
    Edit these to re-theme the whole site.
    ───────────────────────────────────────────────────────────── */
 
-:root {
-  /* Color — light */
-  --background: #f3f1ec;
-  --foreground: #141412;
-  --muted: #6d6a63;
-  --subtle: #a6a39b;
-  --border: rgb(20 20 18 / 0.12);
-  --border-strong: rgb(20 20 18 / 0.28);
-  --surface: #eae7e0;
-  --surface-strong: #dfdbd2;
-  --accent: #e0461f;
-  --accent-foreground: #ffffff;
-  --selection: rgb(224 70 31 / 0.18);
+:root,
+[data-theme="light"] {
+  /* Color — light: warm editorial paper */
+  --background: #f4efe6;
+  --foreground: #171717;
+  --muted: #68635b;
+  --subtle: #9a948a;
+  --border: rgb(30 30 30 / 0.1);
+  --border-strong: rgb(30 30 30 / 0.22);
+  --surface: #f8f4ec;
+  --surface-elevated: #eee7da;
+  --surface-strong: #eee7da;
+  --accent: #c24e24;
+  --accent-fill: #f26a3d;
+  --accent-hover: #ff7a4d;
+  --accent-soft: rgb(242 106 61 / 0.14);
+  --accent-foreground: #1a120e;
+  --selection: rgb(242 106 61 / 0.2);
+  --ambient-a: rgb(242 106 61 / 0.05);
+  --ambient-b: transparent;
+  --guide: #5c544a;
+  --guide-mark: #6a6156;
+  --grain-opacity: 0.028;
+  --grain-blend: multiply;
 
-  /* Typography */
+  /* Typography — families */
+  --font-latin: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-thmanyah: "Thmanyah", var(--font-plex-arabic), var(--font-latin);
+  --font-thmanyah-display: "Thmanyah Display", "Thmanyah", var(--font-plex-arabic), var(--font-latin);
+  --font-body: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-body);
+  --font-label: var(--font-geist-mono), ui-monospace, monospace;
+  --font-features: "ss01", "cv11";
+
+  /* Collaborator accents — distinct from the orange, still quiet */
+  --collab-red: #e06b64;
+  --collab-green: #3aaa78;
+  --collab-blue: #5b93d4;
+  --collab-yellow: #e0be55;
+  --collab-wash: 7%;
+  --collab-line: 18%;
+
+  /* Typography — sizes */
   --fs-display: clamp(2.75rem, 7.6vw, 8.75rem);
+  --fs-hero: clamp(2.25rem, 5.8vw, 5.75rem);
   --fs-h1: clamp(2.5rem, 6vw, 6.25rem);
   --fs-h2: clamp(2rem, 4.4vw, 4.5rem);
   --fs-h3: clamp(1.5rem, 2.6vw, 2.5rem);
@@ -31,16 +104,52 @@
   --fs-body: 1.0625rem;
   --fs-small: 0.875rem;
   --fs-label: 0.6875rem;
+  --fs-nav: 0.75rem;
+  --fs-button: 0.75rem;
+  --fs-cursor: 10px;
+  --fs-greeting: 0.9375rem;
+
+  /* Typography — line heights */
+  --lh-display: 0.92;
+  --lh-hero: 1.12;
+  --lh-h1: 0.95;
+  --lh-h2: 1;
+  --lh-h3: 1.08;
+  --lh-lead: 1.45;
+  --lh-body: 1.6;
+  --lh-small: 1.5;
+  --lh-label: 1.3;
+  --lh-quote: 1.3;
+
+  /* Typography — tracking & case */
   --tracking-display: -0.052em;
   --tracking-heading: -0.038em;
+  --tracking-tight: -0.03em;
   --tracking-label: 0.09em;
+  --label-case: uppercase;
+  --label-weight: 400;
 
-  /* Spacing */
-  --gutter: clamp(1.25rem, 3.6vw, 3.5rem);
-  --section-y: clamp(5.5rem, 11vw, 10.5rem);
+  /* Direction multiplier for physical transforms (1 in LTR, -1 in RTL) */
+  --dir: 1;
+
+  /* Spacing — 8pt scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 40px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 80px;
+  --space-10: 96px;
+  --space-11: 128px;
+  --gutter: clamp(1.5rem, 2.5vw, 3rem);
+  --section-y: var(--space-8);
   --nav-h: 4.5rem;
   --case-hero-h: 56svh;
-  --max-w: 1600px;
+  --case-hero-pad: var(--space-4);
+  --max-w: 80rem;
 
   /* Radius — intentionally small */
   --radius-xs: 2px;
@@ -57,25 +166,101 @@
   --duration-slow: 800ms;
 }
 
+[dir="rtl"] {
+  --dir: -1;
+}
+
+/*
+  Arabic typography — Thmanyah (ثمانية).
+  Sans for UI / body; Serif Display for Hero and section titles.
+  IBM Plex Sans Arabic remains a shaping fallback for any missing glyphs.
+  Self-hosted via next/font/local so visitors never install the family.
+*/
+html[lang="ar"] {
+  --font-body: var(--font-thmanyah);
+  --font-display: var(--font-thmanyah-display);
+  --font-label: var(--font-thmanyah);
+  --font-features: normal;
+  word-spacing: 0.06em;
+
+  --fs-display: clamp(2.35rem, 5.8vw, 6.4rem);
+  --fs-hero: clamp(1.9rem, 4.8vw, 4.35rem);
+  --fs-h1: clamp(2.1rem, 4.6vw, 4.6rem);
+  --fs-h2: clamp(1.65rem, 3.3vw, 3.2rem);
+  --fs-h3: clamp(1.25rem, 2.1vw, 1.9rem);
+  --fs-lead: clamp(1.125rem, 1.3vw, 1.3rem);
+  --fs-body: 1.125rem;
+  --fs-small: 0.9375rem;
+  --fs-label: 0.8125rem;
+  --fs-nav: 0.9rem;
+  --fs-button: 0.9375rem;
+  --fs-cursor: 12px;
+  --fs-greeting: 1rem;
+
+  --lh-display: 1.22;
+  --lh-hero: 1.42;
+  --lh-h1: 1.28;
+  --lh-h2: 1.34;
+  --lh-h3: 1.48;
+  --lh-lead: 1.85;
+  --lh-body: 1.9;
+  --lh-small: 1.75;
+  --lh-label: 1.55;
+  --lh-quote: 1.75;
+
+  --tracking-display: 0;
+  --tracking-heading: 0;
+  --tracking-tight: 0;
+  --tracking-label: 0;
+  --label-case: none;
+  --label-weight: 500;
+}
+
 @media (min-width: 768px) {
   :root {
     --case-hero-h: 64svh;
     --nav-h: 5rem;
+    --section-y: var(--space-9);
   }
 }
 
-.dark {
-  --background: #0e0e0d;
-  --foreground: #ecebe6;
-  --muted: #8e8b84;
-  --subtle: #5c5a55;
-  --border: rgb(236 235 230 / 0.1);
-  --border-strong: rgb(236 235 230 / 0.26);
-  --surface: #171716;
-  --surface-strong: #22221f;
-  --accent: #ff6a42;
-  --accent-foreground: #0e0e0d;
-  --selection: rgb(255 106 66 / 0.28);
+@media (min-width: 1024px) {
+  :root {
+    --section-y: var(--space-10);
+  }
+}
+
+.dark,
+[data-theme="dark"] {
+  /* Color — dark: charcoal, orange used only as accent */
+  --background: #090b0f;
+  --foreground: #f4f5f7;
+  --muted: #9299a5;
+  --subtle: #5c6370;
+  --border: rgb(244 245 247 / 0.08);
+  --border-strong: rgb(244 245 247 / 0.18);
+  --surface: #0e1117;
+  --surface-elevated: #121720;
+  --surface-strong: #121720;
+  --accent: #f26a3d;
+  --accent-fill: #f26a3d;
+  --accent-hover: #ff7d52;
+  --accent-soft: rgb(242 106 61 / 0.16);
+  --accent-foreground: #1a120e;
+  --selection: rgb(242 106 61 / 0.24);
+  --ambient-a: rgb(242 106 61 / 0.045);
+  --ambient-b: transparent;
+  --guide: #a8b2c0;
+  --guide-mark: #b0bac8;
+  --grain-opacity: 0.022;
+  --grain-blend: overlay;
+
+  --collab-red: #e06b64;
+  --collab-green: #3aaa78;
+  --collab-blue: #6aa0de;
+  --collab-yellow: #e0be55;
+  --collab-wash: 8%;
+  --collab-line: 22%;
 }
 
 @theme inline {
@@ -86,33 +271,37 @@
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
   --color-surface-strong: var(--surface-strong);
   --color-accent: var(--accent);
+  --color-accent-fill: var(--accent-fill);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
   --color-accent-foreground: var(--accent-foreground);
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body);
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
   --text-display: var(--fs-display);
-  --text-display--line-height: 0.92;
+  --text-display--line-height: var(--lh-display);
   --text-display--letter-spacing: var(--tracking-display);
   --text-h1: var(--fs-h1);
-  --text-h1--line-height: 0.95;
+  --text-h1--line-height: var(--lh-h1);
   --text-h1--letter-spacing: var(--tracking-display);
   --text-h2: var(--fs-h2);
-  --text-h2--line-height: 1;
+  --text-h2--line-height: var(--lh-h2);
   --text-h2--letter-spacing: var(--tracking-heading);
   --text-h3: var(--fs-h3);
-  --text-h3--line-height: 1.08;
+  --text-h3--line-height: var(--lh-h3);
   --text-h3--letter-spacing: var(--tracking-heading);
   --text-lead: var(--fs-lead);
-  --text-lead--line-height: 1.45;
+  --text-lead--line-height: var(--lh-lead);
   --text-body: var(--fs-body);
-  --text-body--line-height: 1.6;
+  --text-body--line-height: var(--lh-body);
   --text-small: var(--fs-small);
-  --text-small--line-height: 1.5;
+  --text-small--line-height: var(--lh-small);
   --text-label: var(--fs-label);
-  --text-label--line-height: 1.3;
+  --text-label--line-height: var(--lh-label);
   --text-label--letter-spacing: var(--tracking-label);
 
   --radius-xs: var(--radius-xs);
@@ -136,15 +325,45 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     -webkit-tap-highlight-color: transparent;
+    transition:
+      background-color var(--duration-medium) var(--ease-out),
+      color var(--duration-medium) var(--ease-out);
   }
 
   body {
-    font-family: var(--font-sans);
+    font-family: var(--font-body);
     font-size: var(--fs-body);
-    line-height: 1.6;
+    line-height: var(--lh-body);
+    font-feature-settings: var(--font-features);
+    transition:
+      background-color var(--duration-medium) var(--ease-out),
+      color var(--duration-medium) var(--ease-out),
+      border-color var(--duration-medium) var(--ease-out),
+      box-shadow var(--duration-medium) var(--ease-out);
+  }
+
+  /* Arabic snippets on an English page (e.g. the language switcher) */
+  :lang(ar):not(html) {
+    font-family: var(--font-thmanyah);
+    font-feature-settings: normal;
+    letter-spacing: 0;
+    word-spacing: 0.06em;
+    text-transform: none;
+  }
+
+  /* Latin / English inside an Arabic page — keep Geist, never Thmanyah */
+  html[lang="ar"] :lang(en),
+  html[lang="ar"] .latin {
+    font-family: var(--font-latin);
     font-feature-settings: "ss01", "cv11";
-    transition: background-color var(--duration-medium) var(--ease-out),
-      color var(--duration-medium) var(--ease-out);
+    letter-spacing: -0.011em;
+    word-spacing: 0;
+  }
+
+  html[lang="ar"] :is(h1, h2, h3, .text-display, .text-h1, .text-h2, .text-h3) {
+    font-family: var(--font-display);
+    font-weight: 500;
+    word-spacing: 0.02em;
   }
 
   ::selection {
@@ -180,11 +399,12 @@
 }
 
 @utility label {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-label);
-  line-height: 1.3;
+  line-height: var(--lh-label);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
+  text-transform: var(--label-case);
+  font-weight: var(--label-weight);
 }
 
 @utility section-y {
@@ -195,13 +415,26 @@
   border-color: var(--border);
 }
 
-/* Link underline that draws in from the left */
+/* Horizontal shift that follows reading direction: nudge-1 moves forward, -nudge-1 moves back */
+@utility nudge-* {
+  --tw-translate-x: calc(var(--spacing) * --value(number) * var(--dir));
+  translate: var(--tw-translate-x) var(--tw-translate-y, 0);
+}
+@utility -nudge-* {
+  --tw-translate-x: calc(var(--spacing) * --value(number) * var(--dir) * -1);
+  translate: var(--tw-translate-x) var(--tw-translate-y, 0);
+}
+
+/* Link underline that draws in from the reading start */
 @utility link-draw {
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 0% 1px;
   background-position: 0 100%;
   background-repeat: no-repeat;
   transition: background-size var(--duration-medium) var(--ease-out);
+  &:dir(rtl) {
+    background-position: 100% 100%;
+  }
   &:hover,
   &:focus-visible {
     background-size: 100% 1px;
@@ -214,22 +447,69 @@ html.has-cursor * {
   cursor: none !important;
 }
 
-/* Marquee */
-@keyframes marquee {
-  from {
-    transform: translate3d(0, 0, 0);
+/* Language switch: the page fades out, re-renders in the new language, and fades back in */
+#site-header,
+#main,
+#site-footer {
+  transition: opacity 220ms var(--ease-out);
+}
+html[data-lang-switching] #site-header,
+html[data-lang-switching] #main,
+html[data-lang-switching] #site-footer {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Portrait greeting wave */
+@keyframes scroll-cue {
+  0%,
+  100% {
+    opacity: 0.35;
   }
-  to {
-    transform: translate3d(-50%, 0, 0);
+  50% {
+    opacity: 0.8;
   }
 }
 
-.marquee-track {
-  animation: marquee var(--marquee-duration, 40s) linear infinite;
+.scroll-cue {
+  animation: scroll-cue 2.6s ease-in-out infinite;
 }
 
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
+/* Rotating phrase matches the headline. White in dark mode. */
+.hero-phrase {
+  color: var(--foreground);
+  -webkit-text-fill-color: currentColor;
+}
+
+.dark .hero-phrase {
+  color: #fff;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(18deg);
+  }
+  30% {
+    transform: rotate(-10deg);
+  }
+  45% {
+    transform: rotate(16deg);
+  }
+  60% {
+    transform: rotate(-4deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+}
+.wave {
+  display: inline-block;
+  transform-origin: 70% 75%;
+  animation: wave 1.2s var(--ease-in-out) 0.1s 1 both;
 }
 
 /* Hide horizontal scrollbar for drag galleries while keeping them scrollable */
@@ -240,6 +520,208 @@ html.has-cursor * {
   display: none;
 }
 
+/* Ambient workspace — grain + collaborator tags */
+.atmosphere-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* Hero CTAs share the site face. The label style is mono; these two should not be. */
+#hero :is(a.cta-hero, a.link-draw) .label {
+  font-family: var(--font-body);
+}
+
+a.cta-hero {
+  border: 1px solid rgb(23 23 23 / 0.12);
+  background: #fff;
+  color: #171717;
+  transition:
+    background-color 280ms var(--ease-out),
+    color 280ms var(--ease-out),
+    border-color 280ms var(--ease-out),
+    transform 280ms var(--ease-out);
+}
+
+a.cta-hero:hover {
+  border-color: transparent;
+  background: var(--accent-fill);
+  color: var(--accent-foreground);
+  transform: scale(1.02);
+}
+
+.dark a.cta-hero,
+[data-theme="dark"] a.cta-hero {
+  border-color: transparent;
+  box-shadow: 0 10px 28px -18px rgb(0 0 0 / 0.55);
+}
+
+.canvas-guides {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.guide,
+.guide-ticks,
+.guide-cross {
+  position: absolute;
+  opacity: 0.032;
+  will-change: transform, opacity;
+}
+
+.guide-v {
+  top: 8%;
+  bottom: 10%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--guide) 12%, var(--guide) 88%, transparent);
+  animation: guide-y 36s ease-in-out infinite alternate;
+}
+
+.guide-h {
+  left: 6%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--guide) 10%, var(--guide) 90%, transparent);
+  animation: guide-x 42s ease-in-out infinite alternate;
+}
+
+.guide-ticks {
+  width: 72px;
+  height: 10px;
+  background-image: repeating-linear-gradient(to right, var(--guide-mark) 0 1px, transparent 1px 8px);
+  animation: guide-x 28s ease-in-out infinite alternate;
+}
+
+.guide-ticks-v {
+  width: 10px;
+  height: 64px;
+  background-image: repeating-linear-gradient(to bottom, var(--guide-mark) 0 1px, transparent 1px 8px);
+  animation-name: guide-y;
+  animation-duration: 32s;
+}
+
+.guide-cross {
+  width: 18px;
+  height: 18px;
+  opacity: 0.045;
+  background:
+    linear-gradient(var(--accent-fill), var(--accent-fill)) center / 1px 100% no-repeat,
+    linear-gradient(var(--accent-fill), var(--accent-fill)) center / 100% 1px no-repeat;
+  animation: guide-fade 34s ease-in-out infinite;
+}
+
+.canvas-guides[data-paused="true"] :is(.guide, .guide-ticks, .guide-cross) {
+  animation-play-state: paused;
+}
+
+@keyframes guide-y {
+  from { transform: translate3d(0, -7px, 0); }
+  to { transform: translate3d(0, 9px, 0); }
+}
+
+@keyframes guide-x {
+  from { transform: translate3d(-8px, 0, 0); }
+  to { transform: translate3d(10px, 0, 0); }
+}
+
+@keyframes guide-fade {
+  0%, 100% { opacity: 0.012; }
+  45% { opacity: 0.04; }
+  70% { opacity: 0.018; }
+}
+
+.collab {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  pointer-events: none;
+  color: var(--collab);
+  will-change: transform, opacity;
+}
+
+.collab-pointer {
+  display: block;
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.18));
+}
+
+.collab-tag {
+  position: absolute;
+  top: 0.55rem;
+  left: 12px;
+  display: block;
+  width: fit-content;
+  height: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0.16rem 0.42rem;
+  border: 1px solid color-mix(in srgb, var(--collab) var(--collab-line), transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--collab) var(--collab-wash), var(--surface-elevated));
+  color: color-mix(in srgb, var(--collab) 82%, var(--foreground));
+  font-family: var(--font-label);
+  font-size: 0.625rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 500;
+  box-shadow: 0 3px 10px -8px rgb(0 0 0 / 0.4);
+  transition:
+    width 480ms var(--ease-out),
+    height 480ms var(--ease-out),
+    padding 480ms var(--ease-out),
+    border-width 480ms var(--ease-out),
+    opacity 480ms var(--ease-out),
+    box-shadow 480ms var(--ease-out);
+}
+
+.collab-tag.is-hidden {
+  display: none;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  box-shadow: none;
+}
+
+.collab.is-flip .collab-tag {
+  left: auto;
+  right: 12px;
+}
+
+.collab-tag-phrase {
+  display: block;
+  white-space: nowrap;
+  transition:
+    opacity 400ms var(--ease-out),
+    transform 400ms var(--ease-out);
+}
+
+.collab-tag-phrase.is-exit {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.collab-tag-phrase.is-enter {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+html[lang="ar"] .collab-tag {
+  font-size: 0.6875rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -248,7 +730,12 @@ html.has-cursor * {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .marquee-track {
+  .canvas-guides :is(.guide, .guide-ticks, .guide-cross),
+  .wave,
+  .scroll-cue {
     animation: none;
+  }
+  .scroll-cue {
+    opacity: 0.4;
   }
 }

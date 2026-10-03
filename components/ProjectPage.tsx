@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { projects, type Project } from "@/data/projects";
-import { pad } from "@/lib/utils";
+import type { Project } from "@/data/projects";
+import { getDictionary } from "@/lib/locale";
+import { cn, pad } from "@/lib/utils";
 import { BlockRenderer } from "./case/Blocks";
 import { CaseHero } from "./case/CaseHero";
 import { CaseNav, CaseNavMobile } from "./case/CaseNav";
@@ -10,54 +11,63 @@ import { MagneticButton } from "./MagneticButton";
 import { Reveal } from "./Reveal";
 import { TextReveal } from "./TextReveal";
 
-type ProjectPageProps = { project: Project; next: Project; index: number };
+type ProjectPageProps = { project: Project; next: Project; index: number; total: number };
 
-export function ProjectPage({ project, next, index }: ProjectPageProps) {
+export async function ProjectPage({ project, next, index, total }: ProjectPageProps) {
+  const { t } = await getDictionary();
+  const labels = t.caseStudy.meta;
   const titleLines = project.title.split(/(?<= —) /);
   const meta = [
-    { label: "Client", value: project.client },
-    project.company ? { label: "Company", value: project.company } : null,
-    project.role ? { label: "Role", value: project.role } : null,
-    project.year ? { label: "Year", value: project.year } : null,
-    project.platform ? { label: "Platform", value: project.platform } : null,
-  ].filter((m): m is { label: string; value: string } => m !== null);
+    { label: labels.client, value: project.client },
+    project.company ? { label: labels.company, value: project.company } : null,
+    project.role ? { label: labels.role, value: project.role } : null,
+    project.platform ? { label: labels.platform, value: project.platform } : null,
+    project.focus ? { label: labels.focus, value: project.focus } : null,
+  ].filter((m): m is { label: string; value: string } => m !== null && m.value.trim() !== "");
 
   return (
     <article>
       <CaseHero project={project} />
 
-      <header className="container-x pb-[clamp(4rem,8vw,7rem)] pt-8 md:pt-10">
+      <header className="container-x pb-[var(--space-10)] pt-8 md:pt-10">
         <div className="label flex items-center justify-between text-muted">
           <Link href="/#work" className="group inline-flex h-11 items-center gap-2 hover:text-foreground">
-            <ArrowLeft aria-hidden strokeWidth={1.5} className="size-3.5 transition-transform group-hover:-translate-x-1" />
-            All work
+            <ArrowLeft aria-hidden strokeWidth={1.5} className="size-3.5 transition-[translate] group-hover:-nudge-1 rtl:-scale-x-100" />
+            {t.caseStudy.allWork}
           </Link>
           <span>
-            Case study {pad(index)} / {pad(projects.length)}
+            {t.caseStudy.caseStudy}{" "}
+            <span className="tabular-nums">
+              {pad(index)} / {pad(total)}
+            </span>
           </span>
         </div>
 
+        {project.kicker ? <p className="label mt-8 text-muted">{project.kicker}</p> : null}
         <TextReveal
           as="h1"
           trigger="mount"
           delay={0.35}
           ariaLabel={project.title}
           lines={titleLines}
-          className="mt-8 max-w-[22ch] text-[clamp(2.25rem,5.4vw,5.75rem)] font-medium leading-[0.98] tracking-[var(--tracking-display)] md:mt-12"
+          className={cn(
+            "max-w-[18ch] text-[clamp(2.25rem,5.4vw,5.75rem)] font-medium leading-(--lh-h1) tracking-(--tracking-display)",
+            project.kicker ? "mt-4" : "mt-8",
+          )}
         />
 
-        <Reveal className="mt-12 grid gap-y-10 md:mt-16 md:grid-cols-12 md:gap-x-[var(--gutter)]" delay={0.5}>
+        <Reveal className="mt-8 grid gap-y-10 md:mt-12 md:grid-cols-12 md:gap-x-[var(--gutter)]" delay={0.5}>
           <div className="md:col-span-6">
             <p className="max-w-[36ch] text-lead">{project.summary}</p>
             <ul className="label mt-6 flex flex-wrap gap-x-3 gap-y-1 text-muted">
-              {project.tags.map((t) => (
-                <li key={t}>{t}</li>
+              {project.tags.map((tag) => (
+                <li key={tag}>{tag}</li>
               ))}
             </ul>
             {project.liveUrl ? (
               <div className="mt-8">
                 <MagneticButton href={project.liveUrl} variant="outline" external>
-                  View live product
+                  {t.caseStudy.viewLive}
                 </MagneticButton>
               </div>
             ) : null}
@@ -78,7 +88,7 @@ export function ProjectPage({ project, next, index }: ProjectPageProps) {
         <aside className="md:col-span-3">
           <CaseNav sections={project.sections} />
         </aside>
-        <div className="flex min-w-0 flex-col gap-[clamp(5rem,9vw,8rem)] pb-[var(--section-y)] pt-10 md:col-span-9 md:pt-0">
+        <div className="flex min-w-0 flex-col gap-[var(--space-10)] pb-[var(--section-y)] pt-10 md:col-span-9 md:gap-[var(--space-11)] md:pt-0">
           {project.sections.map((section, i) => (
             <section
               key={section.id}
@@ -87,7 +97,7 @@ export function ProjectPage({ project, next, index }: ProjectPageProps) {
               className="border-t border-border pt-8 md:pt-10"
             >
               <p className="label flex gap-3 text-muted">
-                <span className="text-accent">{pad(i + 1)}</span>
+                <span className="tabular-nums text-accent">{pad(i + 1)}</span>
                 <span>{section.label}</span>
               </p>
               <h2 id={`${section.id}-title`} className="mt-6 max-w-[22ch] text-h2 font-medium">

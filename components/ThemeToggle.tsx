@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "./LanguageProvider";
 
 type Theme = "light" | "dark";
 
-export const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}var d=document.documentElement;if(t==='dark'){d.classList.add('dark')}d.style.colorScheme=t}catch(e){}})();`;
+export const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}var d=document.documentElement;d.classList.toggle('dark',t==='dark');d.setAttribute('data-theme',t);d.style.colorScheme=t}catch(e){}})();`;
 
 export function ThemeToggle({ className }: { className?: string }) {
+  const { t } = useI18n();
   const [theme, setTheme] = useState<Theme | null>(null);
 
   useEffect(() => {
@@ -19,6 +21,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     const next: Theme = theme === "dark" ? "light" : "dark";
     const root = document.documentElement;
     root.classList.toggle("dark", next === "dark");
+    root.setAttribute("data-theme", next);
     root.style.colorScheme = next;
     try {
       localStorage.setItem("theme", next);
@@ -32,8 +35,8 @@ export function ThemeToggle({ className }: { className?: string }) {
     <button
       type="button"
       onClick={toggle}
-      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-      title={isDark ? "Light theme" : "Dark theme"}
+      aria-label={isDark ? t.theme.toLight : t.theme.toDark}
+      title={isDark ? t.theme.light : t.theme.dark}
       className={cn("group grid size-11 place-items-center rounded-full", className)}
     >
       <motion.svg

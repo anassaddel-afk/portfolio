@@ -1,37 +1,33 @@
-import { projects } from "@/data/projects";
-import { pad } from "@/lib/utils";
+import { getProjects } from "@/data/projects";
+import { getDictionary } from "@/lib/locale";
 import { MagneticButton } from "./MagneticButton";
 import { ProjectCard } from "./ProjectCard";
 import { Reveal } from "./Reveal";
-import { SectionHeader } from "./SectionHeader";
+import { TextReveal } from "./TextReveal";
 
-export function WorkSection() {
+export async function WorkSection() {
+  const { locale, t } = await getDictionary();
+  const projects = getProjects(locale);
+
   return (
-    <section id="work" className="section-y">
+    <section id="work" className="pb-[var(--section-y)] pt-12 md:pt-16 lg:pt-20">
       <div className="container-x">
-        <SectionHeader
-          index="01"
-          label="Selected work"
-          title={["Selected work"]}
-          aside={
-            <Reveal>
-              <p className="text-lead text-muted">
-                A selection of products, systems and experiences I&apos;ve designed across B2B, B2C and SaaS.
-              </p>
-              <p className="label mt-6 text-muted">{pad(projects.length)} Projects</p>
-            </Reveal>
-          }
-        />
+        <div>
+          <TextReveal as="h2" lines={t.work.title} className="text-h1 font-medium" />
+          <Reveal>
+            <p className="mt-4 max-w-[42rem] text-lead text-muted md:mt-6">{t.work.intro}</p>
+          </Reveal>
+        </div>
 
-        <div className="mt-[clamp(4rem,9vw,8rem)] flex flex-col gap-[clamp(5rem,11vw,10rem)]">
+        <div data-safe className="mt-10 grid grid-cols-1 gap-x-[var(--gutter)] gap-y-10 md:mt-12 md:grid-cols-2 md:gap-y-12 lg:grid-cols-3">
           {projects.map((project, i) => (
             <ProjectCard key={project.slug} project={project} index={i + 1} />
           ))}
         </div>
 
-        <div className="mt-[clamp(5rem,10vw,8rem)] flex justify-center">
+        <div className="mt-16 flex justify-center">
           <MagneticButton href="/work" variant="outline">
-            Index of all work
+            {t.work.indexCta}
           </MagneticButton>
         </div>
       </div>
