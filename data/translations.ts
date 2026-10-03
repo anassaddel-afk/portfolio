@@ -115,7 +115,10 @@ const en = {
   experience: {
     label: "Experience",
     title: ["Where I've worked"],
+    careerTitle: "Where I've worked",
     intro: "Loyalty, payments, a sports club, and the tools teams use to run them.",
+    careerIntro: "A few places where I've designed products, solved problems, and learned along the way.",
+    viewFull: "View full experience",
     fullLink: "Full experience & products",
     opensNewTab: "(opens in a new tab)",
   },
@@ -320,7 +323,10 @@ const ar: Dictionary = {
   experience: {
     label: "الخبرات",
     title: ["أين عملت"],
+    careerTitle: "أماكن عملت بها",
     intro: "الولاء، والمدفوعات، ونادٍ رياضي، والأدوات التي تستخدمها الفرق لإدارتها.",
+    careerIntro: "أماكن صمّمت فيها منتجات، وحلّلت مشكلات، وتعلّمت على الطريق.",
+    viewFull: "عرض الخبرة كاملة",
     fullLink: "الخبرات والمنتجات كاملة",
     opensNewTab: "(يفتح في علامة تبويب جديدة)",
   },

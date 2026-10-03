@@ -1696,11 +1696,17 @@ const content: Localized<Project[]> = [
   },
 ];
 
-const byLocale = localizeAll<Project[]>(content);
+/** The published redemption study leads the list. The rest keep their existing order. */
+const ordered = [
+  ...content.filter((project) => project.slug === "resal-redemption"),
+  ...content.filter((project) => project.slug !== "resal-redemption"),
+];
+
+const byLocale = localizeAll<Project[]>(ordered);
 
 export const getProjects = (locale: Locale) => byLocale[locale];
 
-export const projectCount = content.length;
+export const projectCount = ordered.length;
 
 export function getProject(slug: string, locale: Locale) {
   return byLocale[locale].find((p) => p.slug === slug);
@@ -1713,7 +1719,7 @@ export function getNextProject(slug: string, locale: Locale) {
 }
 
 export function projectIndex(slug: string) {
-  return content.findIndex((p) => p.slug === slug) + 1;
+  return ordered.findIndex((p) => p.slug === slug) + 1;
 }
 
-export const projectSlugs = content.map((p) => p.slug);
+export const projectSlugs = ordered.map((p) => p.slug);

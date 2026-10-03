@@ -5,6 +5,7 @@ import { ImageReveal } from "./ImageReveal";
 import { MagneticButton } from "./MagneticButton";
 import { Parallax } from "./Parallax";
 import { Reveal } from "./Reveal";
+import { ScrollRevealText } from "./ScrollRevealText";
 import { TextReveal } from "./TextReveal";
 
 type AboutSectionProps = {
@@ -25,10 +26,14 @@ export async function AboutSection({ showFacts = true }: AboutSectionProps) {
           <div className="md:col-span-7">
             <TextReveal as="h2" lines={about.greeting} className="text-display font-medium" />
 
-            <Reveal className="mt-8 flex max-w-[42rem] flex-col gap-6 md:mt-10">
-              <p className="text-lead">{about.paragraphs[0]}</p>
-              <p className="text-body text-muted">{about.paragraphs[1]}</p>
-            </Reveal>
+            <div className="mt-8 flex max-w-[42rem] flex-col gap-6 md:mt-10">
+              <ScrollRevealText as="p" className="text-lead">
+                {about.paragraphs[0]}
+              </ScrollRevealText>
+              <Reveal>
+                <p className="text-body text-muted">{about.paragraphs[1]}</p>
+              </Reveal>
+            </div>
 
             <Reveal className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3" delay={0.1}>
               <MagneticButton href={site.links.cv} variant="outline" external>

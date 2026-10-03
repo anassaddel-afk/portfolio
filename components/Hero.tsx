@@ -140,16 +140,16 @@ function RotatingPhrase({ phrases }: { phrases: readonly string[] }) {
   }, [phrases.length]);
 
   return (
-    <span className="relative mx-auto grid max-w-full justify-items-center">
+    <span className="relative mx-auto grid w-full min-w-0 max-w-full justify-items-center">
       {phrases.map((phrase) => (
-        <span key={phrase} aria-hidden className="invisible col-start-1 row-start-1 max-w-full text-balance">
+        <span key={phrase} aria-hidden className="invisible col-start-1 row-start-1 min-w-0 whitespace-nowrap md:text-balance md:whitespace-normal">
           {phrase}
         </span>
       ))}
 
       <span className="hero-phrase-root relative col-start-1 row-start-1 block h-full w-full overflow-hidden">
         {reduce ? (
-          <span className="hero-phrase block max-w-full text-balance">{current}</span>
+          <span className="hero-phrase block max-w-full whitespace-nowrap md:text-balance md:whitespace-normal">{current}</span>
         ) : (
           <AnimatePresence initial={false}>
             <motion.span
@@ -160,7 +160,7 @@ function RotatingPhrase({ phrases }: { phrases: readonly string[] }) {
               exit={{ y: "-0.38em", opacity: 0 }}
               transition={{ duration: 0.55, ease: EASE_OUT }}
             >
-              <span className="hero-phrase text-balance">{current}</span>
+              <span className="hero-phrase whitespace-nowrap md:text-balance md:whitespace-normal">{current}</span>
             </motion.span>
           </AnimatePresence>
         )}
@@ -223,7 +223,7 @@ export function Hero() {
           delay={0.15}
           stagger={0.1}
           labelledBy={headingId}
-          className="mt-4 max-w-[22ch] text-[length:var(--fs-hero)] leading-[var(--lh-hero)] font-medium tracking-[var(--tracking-display)] text-balance md:max-w-[24ch]"
+          className="mt-4 w-full max-w-full text-[length:var(--fs-hero)] leading-[var(--lh-hero)] font-medium tracking-[var(--tracking-display)] text-balance md:max-w-[24ch]"
           lineClassName="max-lg:whitespace-normal"
           lines={[
             ...hero.headline.map((line, i) => <HeadlineLine key={i} text={line} />),

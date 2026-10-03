@@ -2,7 +2,7 @@ import { getExperience } from "@/data/experience";
 import { getDictionary } from "@/lib/locale";
 import { ExperienceTimeline } from "./ExperienceTimeline";
 import { MagneticButton } from "./MagneticButton";
-import { Reveal } from "./Reveal";
+import { ScrollRevealText } from "./ScrollRevealText";
 import { SectionHeader } from "./SectionHeader";
 
 type ExperienceSectionProps = { index?: string; showLink?: boolean; id?: string; limit?: number };
@@ -20,9 +20,9 @@ export async function ExperienceSection({ index, showLink = true, id = "experien
           label={t.experience.label}
           title={t.experience.title}
           aside={
-            <Reveal>
-              <p className="text-lead text-muted">{t.experience.intro}</p>
-            </Reveal>
+            <ScrollRevealText as="p" className="text-lead text-muted">
+              {t.experience.intro}
+            </ScrollRevealText>
           }
         />
 

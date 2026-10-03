@@ -1,6 +1,7 @@
 import type { Block } from "@/data/projects";
 import { pad } from "@/lib/utils";
 import { Reveal } from "../Reveal";
+import { ScrollRevealText } from "../ScrollRevealText";
 import { BeforeAfter } from "./BeforeAfter";
 import { DragGallery } from "./DragGallery";
 import { Compare, Detail, Ecosystem, Feature, Flow, Framework, Insights, Journey, Metrics, Pair, Paths, Phones, Systems } from "./Narrative";
@@ -11,19 +12,22 @@ export function BlockRenderer({ block }: { block: Block }) {
   switch (block.type) {
     case "text":
       return (
-        <Reveal className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
           {block.kicker ? <p className="label text-accent">{block.kicker}</p> : null}
           {block.lead ? (
-            <p className="max-w-[34ch] text-[clamp(1.35rem,2.1vw,2rem)] leading-(--lh-quote) tracking-(--tracking-tight)">
+            <ScrollRevealText
+              as="p"
+              className="max-w-[34ch] text-[clamp(1.35rem,2.1vw,2rem)] leading-(--lh-quote) tracking-(--tracking-tight)"
+            >
               {block.lead}
-            </p>
+            </ScrollRevealText>
           ) : null}
           {block.body?.map((p) => (
             <p key={p} className="max-w-[62ch] text-body text-muted">
               {p}
             </p>
           ))}
-        </Reveal>
+        </div>
       );
 
     case "facts":

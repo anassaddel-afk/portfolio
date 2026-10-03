@@ -256,3 +256,29 @@ const content: Localized<Experience> = {
 const byLocale = localizeAll<Experience>(content);
 
 export const getExperience = (locale: Locale) => byLocale[locale];
+
+const PRESENT = /present|الآن|now/i;
+
+/** Years inside a display period. Does not change how the period is shown. */
+function periodSpan(period: string) {
+  const years = period.match(/\d{4}/g)?.map(Number) ?? [];
+  const start = years[0] ?? 0;
+  const end = years[1] ?? start;
+  const current = PRESENT.test(period);
+  return { start, end: current ? 9999 : end, current };
+}
+
+/**
+ * Most recent first. An ongoing role (Present) ranks ahead of a finished
+ * role, even when that finished role started later. Then later end year,
+ * then later start year.
+ */
+export function sortExperienceByDate<T extends { period: string }>(roles: readonly T[]): T[] {
+  return [...roles].sort((a, b) => {
+    const left = periodSpan(a.period);
+    const right = periodSpan(b.period);
+    if (left.current !== right.current) return left.current ? -1 : 1;
+    if (left.end !== right.end) return right.end - left.end;
+    return right.start - left.start;
+  });
+}

@@ -3,7 +3,7 @@ import { CanvasGuides } from "@/components/CanvasGuides";
 import { Collaborators } from "@/components/Collaborators";
 import { ContactSection } from "@/components/ContactSection";
 import { CuriousAsk } from "@/components/CuriousAsk";
-import { ExperienceSection } from "@/components/ExperienceSection";
+import { HomeExperience } from "@/components/HomeExperience";
 import { Hero } from "@/components/Hero";
 import { PrinciplesSection } from "@/components/PrinciplesSection";
 import { WorkSection } from "@/components/WorkSection";
@@ -16,7 +16,7 @@ export default function HomePage() {
       <Hero />
       <WorkSection />
       <PrinciplesSection />
-      <ExperienceSection limit={3} />
+      <HomeExperience />
       <AboutSection showFacts={false} />
       <CuriousAsk />
       <ContactSection />

@@ -1,6 +1,7 @@
 import { getExperience } from "@/data/experience";
 import { getDictionary } from "@/lib/locale";
 import { Reveal } from "./Reveal";
+import { ScrollRevealText } from "./ScrollRevealText";
 import { SectionHeader } from "./SectionHeader";
 import { ToolboxList } from "./Toolbox";
 
@@ -15,9 +16,9 @@ export async function CapabilitiesSection() {
           label={t.capabilities.label}
           title={t.capabilities.title}
           aside={
-            <Reveal>
-              <p className="text-lead text-muted">{t.capabilities.intro}</p>
-            </Reveal>
+            <ScrollRevealText as="p" className="text-lead text-muted">
+              {t.capabilities.intro}
+            </ScrollRevealText>
           }
         />
 

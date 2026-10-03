@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Reveal } from "./Reveal";
 import { TextReveal } from "./TextReveal";
 
 type PageIntroProps = { label: string; title: string[]; children?: ReactNode };
@@ -10,9 +9,7 @@ export function PageIntro({ label, title, children }: PageIntroProps) {
       <p className="label text-muted">{label}</p>
       <TextReveal as="h1" trigger="mount" delay={0.1} lines={title} className="mt-4 text-display font-medium" />
       {children ? (
-        <Reveal className="mt-6 max-w-[42rem] text-lead text-muted md:mt-8" delay={0.35}>
-          {children}
-        </Reveal>
+        <div className="mt-6 max-w-[42rem] text-lead text-muted md:mt-8">{children}</div>
       ) : null}
     </header>
   );

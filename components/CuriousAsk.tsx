@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { openAskAnas } from "@/lib/ask-anas";
 import { useI18n } from "./LanguageProvider";
 import { Magnetic } from "./Magnetic";
-import { Reveal } from "./Reveal";
+import { ScrollRevealText } from "./ScrollRevealText";
 
 export function CuriousAsk() {
   const { t } = useI18n();
@@ -12,8 +12,10 @@ export function CuriousAsk() {
   return (
     <section className="border-t border-border" aria-label={t.curious.cta}>
       <div className="container-x py-12 md:py-16">
-        <Reveal className="flex max-w-[36rem] flex-col items-start gap-5">
-          <p className="text-lead text-muted">{t.curious.prompt}</p>
+        <div className="flex max-w-[36rem] flex-col items-start gap-5">
+          <ScrollRevealText as="p" className="text-lead text-muted">
+            {t.curious.prompt}
+          </ScrollRevealText>
           <Magnetic>
             <button
               type="button"
@@ -30,7 +32,7 @@ export function CuriousAsk() {
               />
             </button>
           </Magnetic>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

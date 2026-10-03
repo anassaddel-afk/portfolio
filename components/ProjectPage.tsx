@@ -8,7 +8,7 @@ import { CaseHero } from "./case/CaseHero";
 import { CaseNav, CaseNavMobile } from "./case/CaseNav";
 import { NextProject } from "./case/NextProject";
 import { MagneticButton } from "./MagneticButton";
-import { Reveal } from "./Reveal";
+import { ScrollRevealText } from "./ScrollRevealText";
 import { TextReveal } from "./TextReveal";
 
 type ProjectPageProps = { project: Project; next: Project; index: number; total: number };
@@ -56,9 +56,11 @@ export async function ProjectPage({ project, next, index, total }: ProjectPagePr
           )}
         />
 
-        <Reveal className="mt-8 grid gap-y-10 md:mt-12 md:grid-cols-12 md:gap-x-[var(--gutter)]" delay={0.5}>
+        <div className="mt-8 grid gap-y-10 md:mt-12 md:grid-cols-12 md:gap-x-[var(--gutter)]">
           <div className="md:col-span-6">
-            <p className="max-w-[36ch] text-lead">{project.summary}</p>
+            <ScrollRevealText as="p" className="max-w-[36ch] text-lead">
+              {project.summary}
+            </ScrollRevealText>
             <ul className="label mt-6 flex flex-wrap gap-x-3 gap-y-1 text-muted">
               {project.tags.map((tag) => (
                 <li key={tag}>{tag}</li>
@@ -80,7 +82,7 @@ export async function ProjectPage({ project, next, index, total }: ProjectPagePr
               </div>
             ))}
           </dl>
-        </Reveal>
+        </div>
       </header>
 
       <div className="container-x grid grid-cols-1 md:grid-cols-12 md:gap-x-[var(--gutter)]">
@@ -100,9 +102,13 @@ export async function ProjectPage({ project, next, index, total }: ProjectPagePr
                 <span className="tabular-nums text-accent">{pad(i + 1)}</span>
                 <span>{section.label}</span>
               </p>
-              <h2 id={`${section.id}-title`} className="mt-6 max-w-[22ch] text-h2 font-medium">
+              <ScrollRevealText
+                as="h2"
+                id={`${section.id}-title`}
+                className="mt-6 max-w-[22ch] text-h2 font-medium"
+              >
                 {section.title ?? section.label}
-              </h2>
+              </ScrollRevealText>
               <div className="mt-10 flex flex-col gap-12 md:mt-14 md:gap-16">
                 {section.blocks.map((block, b) => (
                   <BlockRenderer key={b} block={block} />

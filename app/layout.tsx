@@ -61,7 +61,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <noscript>
-          <style>{`.js-reveal{opacity:1!important;filter:none!important;transform:none!important;clip-path:none!important}`}</style>
+          <style>{`.js-reveal,.scroll-reveal,.scroll-reveal-inner{opacity:1!important;filter:none!important;transform:none!important;clip-path:none!important}`}</style>
         </noscript>
       </head>
       <body className="relative min-h-svh bg-background text-foreground">

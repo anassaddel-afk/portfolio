@@ -5,6 +5,7 @@ import { CuriousAsk } from "@/components/CuriousAsk";
 import { ExperienceSection } from "@/components/ExperienceSection";
 import { MagneticButton } from "@/components/MagneticButton";
 import { PageIntro } from "@/components/PageIntro";
+import { ScrollRevealText } from "@/components/ScrollRevealText";
 import { Reveal } from "@/components/Reveal";
 import { SectionHeader } from "@/components/SectionHeader";
 import { ToolboxList } from "@/components/Toolbox";
@@ -25,7 +26,7 @@ export default async function ExperiencePage() {
   return (
     <>
       <PageIntro label={page.label} title={page.title}>
-        {t.experience.intro}
+        <ScrollRevealText as="p">{t.experience.intro}</ScrollRevealText>
         <div className="mt-8">
           <MagneticButton href={site.links.cv} variant="outline" external>
             {t.about.downloadCv}

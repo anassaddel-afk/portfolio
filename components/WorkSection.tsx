@@ -2,7 +2,7 @@ import { getProjects } from "@/data/projects";
 import { getDictionary } from "@/lib/locale";
 import { MagneticButton } from "./MagneticButton";
 import { ProjectCard } from "./ProjectCard";
-import { Reveal } from "./Reveal";
+import { ScrollRevealText } from "./ScrollRevealText";
 import { TextReveal } from "./TextReveal";
 
 export async function WorkSection() {
@@ -14,9 +14,9 @@ export async function WorkSection() {
       <div className="container-x">
         <div>
           <TextReveal as="h2" lines={t.work.title} className="text-h1 font-medium" />
-          <Reveal>
-            <p className="mt-4 max-w-[42rem] text-lead text-muted md:mt-6">{t.work.intro}</p>
-          </Reveal>
+          <ScrollRevealText as="p" className="mt-4 max-w-[42rem] text-lead text-muted md:mt-6">
+            {t.work.intro}
+          </ScrollRevealText>
         </div>
 
         <div data-safe className="mt-10 grid grid-cols-1 gap-x-[var(--gutter)] gap-y-10 md:mt-12 md:grid-cols-2 md:gap-y-12 lg:grid-cols-3">

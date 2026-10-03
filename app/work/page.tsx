@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/PageIntro";
+import { ScrollRevealText } from "@/components/ScrollRevealText";
 import { WorkIndex } from "@/components/WorkIndex";
 import { getProjects } from "@/data/projects";
 import { getDictionary } from "@/lib/locale";
@@ -15,7 +16,7 @@ export default async function WorkPage() {
   return (
     <>
       <PageIntro label={t.workPage.label} title={t.workPage.title}>
-        {t.workPage.intro}
+        <ScrollRevealText as="p">{t.workPage.intro}</ScrollRevealText>
       </PageIntro>
       <section className="container-x pb-[var(--section-y)]" aria-label={t.workPage.listLabel}>
         <WorkIndex projects={getProjects(locale)} />

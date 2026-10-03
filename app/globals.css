@@ -96,7 +96,8 @@
 
   /* Typography — sizes */
   --fs-display: clamp(2.75rem, 7.6vw, 8.75rem);
-  --fs-hero: clamp(2.25rem, 5.8vw, 5.75rem);
+  /* Mobile stays small enough for the longest rotating phrase to fit on one line. */
+  --fs-hero: clamp(1.3rem, 6.15vw, 1.65rem);
   --fs-h1: clamp(2.5rem, 6vw, 6.25rem);
   --fs-h2: clamp(2rem, 4.4vw, 4.5rem);
   --fs-h3: clamp(1.5rem, 2.6vw, 2.5rem);
@@ -184,7 +185,7 @@ html[lang="ar"] {
   word-spacing: 0.06em;
 
   --fs-display: clamp(2.35rem, 5.8vw, 6.4rem);
-  --fs-hero: clamp(1.9rem, 4.8vw, 4.35rem);
+  --fs-hero: clamp(1.15rem, 5.15vw, 1.45rem);
   --fs-h1: clamp(2.1rem, 4.6vw, 4.6rem);
   --fs-h2: clamp(1.65rem, 3.3vw, 3.2rem);
   --fs-h3: clamp(1.25rem, 2.1vw, 1.9rem);
@@ -221,6 +222,11 @@ html[lang="ar"] {
     --case-hero-h: 64svh;
     --nav-h: 5rem;
     --section-y: var(--space-9);
+    --fs-hero: clamp(2.25rem, 5.8vw, 5.75rem);
+  }
+
+  html[lang="ar"] {
+    --fs-hero: clamp(1.9rem, 4.8vw, 4.35rem);
   }
 }
 
@@ -722,6 +728,64 @@ html[lang="ar"] .collab-tag {
   font-size: 0.6875rem;
 }
 
+/* Scroll-linked line reveal. Text stays fully readable until .is-ready. */
+.scroll-reveal-line {
+  --reveal: 1;
+}
+
+.scroll-reveal.is-ready .scroll-reveal-inner {
+  opacity: calc(0.32 + 0.68 * var(--reveal, 1));
+  transform: translate3d(0, calc((1 - var(--reveal, 1)) * 4px), 0);
+}
+
+@media (min-width: 768px) {
+  .scroll-reveal.is-ready .scroll-reveal-inner {
+    transform: translate3d(0, calc((1 - var(--reveal, 1)) * 6px), 0);
+  }
+}
+
+@media (min-width: 1024px) {
+  .scroll-reveal.is-ready .scroll-reveal-inner {
+    transform: translate3d(0, calc((1 - var(--reveal, 1)) * 8px), 0);
+  }
+}
+
+/* Home career timeline — station width is a share of the sticky viewport. */
+.career-viewport {
+  container-type: inline-size;
+}
+
+/* Readable column. Mobile stays off the screen edges; desktop can run wider. */
+.career-copy {
+  width: min(22.5rem, calc(100vw - var(--space-7)));
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .career-copy {
+    width: min(36rem, 100%);
+  }
+}
+
+.career-logo {
+  filter: grayscale(1);
+}
+
+.dark .career-logo,
+[data-theme="dark"] .career-logo {
+  filter: grayscale(1) invert(1);
+}
+
+.career-track {
+  --station: 78cqi;
+}
+
+@media (min-width: 768px) {
+  .career-track {
+    --station: 46cqi;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -737,5 +801,22 @@ html[lang="ar"] .collab-tag {
   }
   .scroll-cue {
     opacity: 0.4;
+  }
+  .scroll-reveal.is-ready .scroll-reveal-inner {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .career-stage {
+    display: none !important;
+  }
+  .career-static {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    clip-path: none !important;
+    white-space: normal !important;
   }
 }
