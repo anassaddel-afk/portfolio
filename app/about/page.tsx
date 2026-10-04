@@ -7,7 +7,11 @@ import { getDictionary } from "@/lib/locale";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getDictionary();
-  return { title: t.aboutPage.metaTitle, description: t.aboutPage.metaDescription };
+  return {
+    title: t.aboutPage.metaTitle,
+    description: t.aboutPage.metaDescription,
+    alternates: { canonical: "/about" },
+  };
 }
 
 export default function AboutPage() {

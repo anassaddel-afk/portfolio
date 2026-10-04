@@ -2,7 +2,7 @@ import type { Dictionary } from "./translations";
 
 /** Language-independent facts. All copy lives in `translations.ts`. */
 export const site = {
-  url: "https://anasadel.framer.website",
+  url: "https://anasadel.com",
   email: "anassaddel@gmail.com",
 
   portrait: { src: "/images/about/anas-portrait.png", width: 1239, height: 1269 },
@@ -13,7 +13,7 @@ export const site = {
     email: "mailto:anassaddel@gmail.com",
     linkedin: "https://www.linkedin.com/in/anas-husseinn/",
     substack: "https://substack.com/@anasadel",
-    cv: "https://drive.google.com/file/d/1NRyGgqohc9bjp_dRhFT3cVIWcXpD5VMl/view?usp=sharing",
+    cv: "/Anas-Adel-CV.pdf",
     call: "https://cal.com/anas.adel/30min",
     // Add profile URLs here and they appear in Contact and the menu automatically.
     dribbble: "",

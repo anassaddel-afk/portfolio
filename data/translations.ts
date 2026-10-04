@@ -8,10 +8,9 @@ import type { Locale } from "@/lib/i18n";
  */
 const en = {
   meta: {
-    title: "Anas Adel",
-    description:
-      "Anas Adel designs digital products and user experiences — payments, loyalty, memberships, and the systems that connect them.",
-    ogAlt: "Anas Adel",
+    title: "Anas Adel — Product Designer (B2B, B2C & SaaS)",
+    description: "Anas Adel — Product Designer (B2B, B2C & SaaS) Portfolio website",
+    ogAlt: "Anas Adel, Product Designer (B2B, B2C & SaaS)",
   },
   name: "Anas Adel",
   role: "Senior Product Designer",
@@ -219,10 +218,9 @@ export type Dictionary = typeof en;
 
 const ar: Dictionary = {
   meta: {
-    title: "أنس عادل",
-    description:
-      "يصمّم أنس عادل المنتجات الرقمية وتجارب المستخدم — المدفوعات، والولاء، والعضويات، والأنظمة التي تربطها.",
-    ogAlt: "أنس عادل",
+    title: "أنس عادل — مصمم منتجات (B2B و B2C و SaaS)",
+    description: "أنس عادل — مصمم منتجات (B2B و B2C و SaaS) موقع الأعمال",
+    ogAlt: "أنس عادل، مصمم منتجات (B2B و B2C و SaaS)",
   },
   name: "أنس عادل",
   role: "مصمم منتجات أول",

@@ -15,7 +15,11 @@ import { getDictionary } from "@/lib/locale";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getDictionary();
-  return { title: t.experiencePage.metaTitle, description: t.experiencePage.metaDescription };
+  return {
+    title: t.experiencePage.metaTitle,
+    description: t.experiencePage.metaDescription,
+    alternates: { canonical: "/experience" },
+  };
 }
 
 export default async function ExperiencePage() {

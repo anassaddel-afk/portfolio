@@ -10,8 +10,10 @@ import { Providers } from "@/components/Providers";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { themeScript } from "@/components/ThemeToggle";
+import { site } from "@/data/site";
 import { directionOf } from "@/lib/i18n";
 import { getDictionary } from "@/lib/locale";
+import { OG_IMAGE, SITE_URL, socialMetadata } from "@/lib/seo";
 import "./globals.css";
 
 const sans = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display: "swap" });
@@ -27,17 +29,18 @@ const arabic = IBM_Plex_Sans_Arabic({
 export async function generateMetadata(): Promise<Metadata> {
   const { locale, t } = await getDictionary();
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    metadataBase: new URL(SITE_URL),
     title: { default: t.meta.title, template: `%s — ${t.name}` },
     description: t.meta.description,
-    openGraph: {
+    authors: [{ name: "Anas Adel", url: SITE_URL }],
+    creator: "Anas Adel",
+    ...socialMetadata({
       title: t.meta.title,
       description: t.meta.description,
-      images: [{ url: "/images/about/anas-wide.png", width: 1730, height: 909, alt: t.meta.ogAlt }],
-      type: "website",
-      locale: locale === "ar" ? "ar_EG" : "en_US",
-    },
-    twitter: { card: "summary_large_image" },
+      path: "/",
+      locale,
+      image: { ...OG_IMAGE, alt: t.meta.ogAlt },
+    }),
   };
 }
 
@@ -65,6 +68,20 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         </noscript>
       </head>
       <body className="relative min-h-svh bg-background text-foreground">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: t.name,
+              jobTitle: locale === "ar" ? "مصمم منتجات" : "Product Designer",
+              url: SITE_URL,
+              image: `${SITE_URL}${site.portrait.src}`,
+              sameAs: [site.links.linkedin, site.links.substack],
+            }),
+          }}
+        />
         <a
           href="#main"
           className="label sr-only z-[90] rounded-full bg-foreground px-4 py-3 text-background focus:not-sr-only focus:fixed focus:start-4 focus:top-4"
