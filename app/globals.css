@@ -655,77 +655,81 @@ a.cta-hero:hover {
 }
 
 .collab-pointer {
+  position: relative;
+  z-index: 2;
   display: block;
-  width: 14px;
-  height: 14px;
-  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.18));
+  width: 18px;
+  height: 20px;
+  overflow: visible;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.16));
 }
 
 .collab-tag {
   position: absolute;
-  top: 0.55rem;
-  left: 12px;
+  z-index: 1;
+  top: 18px;
+  left: 16px;
   display: block;
-  width: fit-content;
+  width: max-content;
+  max-width: max-content;
   height: auto;
-  overflow: hidden;
   white-space: nowrap;
-  padding: 0.16rem 0.42rem;
-  border: 1px solid color-mix(in srgb, var(--collab) var(--collab-line), transparent);
+  padding: 4px 8px;
+  border: 0;
   border-radius: 4px;
-  background: color-mix(in srgb, var(--collab) var(--collab-wash), var(--surface-elevated));
-  color: color-mix(in srgb, var(--collab) 82%, var(--foreground));
-  font-family: var(--font-label);
-  font-size: 0.625rem;
+  background: var(--collab);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 13px;
   line-height: 1.2;
   letter-spacing: 0;
   text-transform: none;
   font-weight: 500;
-  box-shadow: 0 3px 10px -8px rgb(0 0 0 / 0.4);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 0.12);
+  transform-origin: top left;
   transition:
-    width 480ms var(--ease-out),
-    height 480ms var(--ease-out),
-    padding 480ms var(--ease-out),
-    border-width 480ms var(--ease-out),
-    opacity 480ms var(--ease-out),
-    box-shadow 480ms var(--ease-out);
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out);
+}
+
+.collab[data-collab="yellow"] .collab-tag {
+  color: #1c1408;
+}
+
+.collab-tag.is-closing,
+.collab-tag.is-opening {
+  opacity: 0;
+  transform: translate3d(-3px, -3px, 0) scale(0.97);
 }
 
 .collab-tag.is-hidden {
   display: none;
-  width: 0;
-  height: 0;
-  padding: 0;
-  border: 0;
   opacity: 0;
   box-shadow: none;
-}
-
-.collab.is-flip .collab-tag {
-  left: auto;
-  right: 12px;
 }
 
 .collab-tag-phrase {
   display: block;
   white-space: nowrap;
-  transition:
-    opacity 400ms var(--ease-out),
-    transform 400ms var(--ease-out);
 }
 
-.collab-tag-phrase.is-exit {
-  opacity: 0;
-  transform: translateY(-4px);
+.dark .collab-tag,
+[data-theme="dark"] .collab-tag {
+  box-shadow: 0 2px 5px rgb(0 0 0 / 0.22);
 }
 
-.collab-tag-phrase.is-enter {
-  opacity: 0;
-  transform: translateY(4px);
-}
+@media (max-width: 767px) {
+  .collab-pointer {
+    width: 16px;
+    height: 18px;
+  }
 
-html[lang="ar"] .collab-tag {
-  font-size: 0.6875rem;
+  .collab-tag {
+    top: 16px;
+    left: 14px;
+    padding: 4px 7px;
+    font-size: 12px;
+  }
 }
 
 /* Scroll-linked line reveal. Text stays fully readable until .is-ready. */
@@ -755,6 +759,43 @@ html[lang="ar"] .collab-tag {
   container-type: inline-size;
 }
 
+/* How I Work. Mobile stacks in a narrow column. Desktop keeps the title sticky beside the principles. */
+.think-layout {
+  width: min(22.5rem, 100%);
+  margin-inline: auto;
+}
+
+.think-title {
+  margin-bottom: var(--space-10);
+}
+
+@media (min-width: 768px) {
+  .think-layout {
+    width: 100%;
+    margin-inline: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--gutter);
+    align-items: start;
+  }
+
+  .think-title {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--space-8));
+    margin-bottom: 0;
+    height: fit-content;
+  }
+
+  .think-principle {
+    opacity: 0.4;
+    transition: opacity var(--duration-medium) var(--ease-out);
+  }
+
+  .think-principle.is-active {
+    opacity: 1;
+  }
+}
+
 /* Readable column. Mobile stays off the screen edges; desktop can run wider. */
 .career-copy {
   width: min(22.5rem, calc(100vw - var(--space-7)));
@@ -767,8 +808,37 @@ html[lang="ar"] .collab-tag {
   }
 }
 
+/* Logo frame is a shared max area. The image is inset so every mark — wide or tall — stays complete. */
+.career-logo-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 5.5rem;
+  overflow: visible;
+}
+
+.career-logo-fit {
+  position: absolute;
+  inset: 8px;
+  overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .career-logo-slot {
+    height: 11rem;
+  }
+
+  .career-logo-fit {
+    inset: 16px 20px;
+  }
+}
+
 .career-logo {
   filter: grayscale(1);
+  object-fit: contain;
+  object-position: center;
 }
 
 .dark .career-logo,
@@ -809,6 +879,12 @@ html[lang="ar"] .collab-tag {
   .career-stage {
     display: none !important;
   }
+  .career-cta,
+  .career-cta > div {
+    position: static !important;
+    height: auto !important;
+    pointer-events: auto;
+  }
   .career-static {
     position: static !important;
     width: auto !important;
@@ -818,5 +894,8 @@ html[lang="ar"] .collab-tag {
     clip: auto !important;
     clip-path: none !important;
     white-space: normal !important;
+  }
+  .think-principle {
+    opacity: 1 !important;
   }
 }

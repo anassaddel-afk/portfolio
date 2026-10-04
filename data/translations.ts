@@ -39,7 +39,7 @@ const en = {
     yellow: ["Prototyping", "Concept Testing", "Experience Design", "Interface Design"],
   },
   curious: {
-    prompt: "Curious how I approach product problems?",
+    prompt: "Curious about my work, or how I approach product problems?",
     cta: "Ask Anas",
   },
 
@@ -72,7 +72,7 @@ const en = {
   work: {
     label: "Selected Work",
     title: ["My Work"],
-    intro: "Selected work across digital products, experiences, and complex product ecosystems.",
+    intro: "Products where the hard part is the flow — loyalty, payments, memberships, and the tools that run them.",
     projects: "Projects",
     viewCaseStudy: "View case study",
     comingSoon: "Coming soon",
@@ -101,14 +101,17 @@ const en = {
 
   principles: {
     label: "Principles",
-    title: ["How I think"],
-    intro: "Six rules I come back to on every product — whatever the industry or the screen size.",
+    title: ["How I Work"],
+    intro:
+      "I start with the problem, understand the context around it, and use evidence to make decisions. Then I work with the team to turn those decisions into something people can actually use — and measure what happens next.",
+    close:
+      "I look for the intersection between what people need, what the product needs to achieve, and what the team can realistically build.",
   },
 
   capabilities: {
     label: "Capabilities",
     title: ["From the problem", "to the pixel."],
-    intro: "End-to-end product design — from early research and strategy to design systems and shipped experiences.",
+    intro: "Research, the flow, the system, and the interface that ships.",
     toolbox: "Toolbox",
   },
 
@@ -116,8 +119,8 @@ const en = {
     label: "Experience",
     title: ["Where I've worked"],
     careerTitle: "Where I've worked",
-    intro: "Loyalty, payments, a sports club, and the tools teams use to run them.",
-    careerIntro: "A few places where I've designed products, solved problems, and learned along the way.",
+    intro: "What I worked on, who I worked with, and which results belong to me, the team, or the company.",
+    careerIntro: "A short pass through the products, the problems, and what changed.",
     viewFull: "View full experience",
     fullLink: "Full experience & products",
     opensNewTab: "(opens in a new tab)",
@@ -175,7 +178,7 @@ const en = {
     metaDescription: "A selection of products, experiences, and design systems designed by Anas Adel.",
     label: "(Index) — Work",
     title: ["My Work"],
-    intro: "Selected work across digital products, experiences, and complex product ecosystems.",
+    intro: "Products where the hard part is the flow — loyalty, payments, memberships, and the tools that run them.",
     listLabel: "All projects",
   },
 
@@ -193,7 +196,7 @@ const en = {
     productsTitle: ["Shipped products"],
     toolboxLabel: "Toolbox",
     toolboxTitle: ["My toolbox"],
-    toolboxIntro: "Tools and systems I use to turn ideas into shipped products.",
+    toolboxIntro: "What I use from research through a shipped interface.",
   },
 
   notFound: { title: ["This page", "doesn't exist."], back: "Back home" },
@@ -202,13 +205,13 @@ const en = {
     name: "Ask Anas",
     open: "Ask Anas",
     close: "Close Ask Anas",
-    subtitle: "A short way to see how I frame problems, make decisions, and talk about the work.",
+    subtitle: "Curious about my work or how I approach product problems? Ask away.",
     questions: "Suggested questions",
-    explore: "Explore the case study",
-    related: "Explore a related project",
+    explore: "View case study",
+    related: "Read more",
     more: "Ask something else",
     placeholder: "Or ask in your own words",
-    fallback: "I can walk you through my experience, a case study, how I approach a new problem, or how I think about loyalty, data and experiments. Pick a question — or ask in your own words.",
+    fallback: "I can talk about where I've worked, the redemption case study, how I start a problem, or how I use research and experiments. Pick a question, or ask in your own words.",
   },
 };
 
@@ -247,7 +250,7 @@ const ar: Dictionary = {
     yellow: ["النماذج الأولية", "اختبار المفاهيم", "تصميم التجربة", "تصميم الواجهة"],
   },
   curious: {
-    prompt: "حاب تعرف كيف أقارب مشاكل المنتج؟",
+    prompt: "حابب تعرف أكثر عن شغلي، أو عن طريقتي في حل مشكلات المنتجات؟",
     cta: "اسأل أنس",
   },
 
@@ -280,7 +283,7 @@ const ar: Dictionary = {
   work: {
     label: "أعمال مختارة",
     title: ["أعمالى"],
-    intro: "مختارات من أعمالي في تصميم المنتجات الرقمية والتجارب والأنظمة المعقدة.",
+    intro: "منتجات يكون المسار فيها هو الجزء الصعب: الولاء، والمدفوعات، والعضويات، والأدوات التي تديرها الفرق.",
     projects: "مشاريع",
     viewCaseStudy: "عرض دراسة الحالة",
     comingSoon: "قريبًا",
@@ -309,14 +312,17 @@ const ar: Dictionary = {
 
   principles: {
     label: "المبادئ",
-    title: ["كيف أفكّر"],
-    intro: "ستّ قواعد أعود إليها في كل منتج — مهما كان القطاع أو حجم الشاشة.",
+    title: ["كيف أعمل"],
+    intro:
+      "أبدأ بفهم المشكلة وسياقها، وأستخدم البحث والبيانات للوصول إلى قرارات أوضح. ثم أعمل مع الفريق لتحويل هذه القرارات إلى تجربة يمكن للناس استخدامها، وأتابع ما يحدث بعدها.",
+    close:
+      "أبحث عن نقطة التقاء ما يحتاجه المستخدم، وما يحتاج المنتج إلى تحقيقه، وما يستطيع الفريق بناءه بشكل واقعي.",
   },
 
   capabilities: {
     label: "القدرات",
     title: ["من المشكلة", "إلى آخر بكسل."],
-    intro: "تصميم منتجات من طرف إلى طرف — من البحث الأول والاستراتيجية إلى أنظمة التصميم والتجارب التي تصل إلى الناس.",
+    intro: "البحث، والمسار، والنظام، والواجهة التي تصل إلى الناس.",
     toolbox: "الأدوات",
   },
 
@@ -324,8 +330,8 @@ const ar: Dictionary = {
     label: "الخبرات",
     title: ["أين عملت"],
     careerTitle: "أماكن عملت بها",
-    intro: "الولاء، والمدفوعات، ونادٍ رياضي، والأدوات التي تستخدمها الفرق لإدارتها.",
-    careerIntro: "أماكن صمّمت فيها منتجات، وحلّلت مشكلات، وتعلّمت على الطريق.",
+    intro: "ما عملت عليه، ومع من، وأي النتائج تعود إليّ أو إلى الفريق أو إلى الشركة.",
+    careerIntro: "مرور مختصر على المنتجات، والمشكلات، وما الذي تغيّر.",
     viewFull: "عرض الخبرة كاملة",
     fullLink: "الخبرات والمنتجات كاملة",
     opensNewTab: "(يفتح في علامة تبويب جديدة)",
@@ -383,7 +389,7 @@ const ar: Dictionary = {
     metaDescription: "منتجات وتجارب وأنظمة تصميم من عمل أنس عادل.",
     label: "(الفهرس) — الأعمال",
     title: ["أعمالى"],
-    intro: "مختارات من أعمالي في تصميم المنتجات الرقمية والتجارب والأنظمة المعقدة.",
+    intro: "منتجات يكون المسار فيها هو الجزء الصعب: الولاء، والمدفوعات، والعضويات، والأدوات التي تديرها الفرق.",
     listLabel: "جميع المشاريع",
   },
 
@@ -401,7 +407,7 @@ const ar: Dictionary = {
     productsTitle: ["منتجات أُطلقت"],
     toolboxLabel: "الأدوات",
     toolboxTitle: ["أدواتي"],
-    toolboxIntro: "الأدوات والأنظمة التي أستخدمها لتحويل الأفكار إلى منتجات تصل إلى الناس.",
+    toolboxIntro: "ما أستخدمه من بحث المستخدمين حتى الواجهة التي تصل إلى الناس.",
   },
 
   notFound: { title: ["هذه الصفحة", "غير موجودة."], back: "العودة إلى الرئيسية" },
@@ -410,13 +416,13 @@ const ar: Dictionary = {
     name: "اسأل أنس",
     open: "اسأل أنس",
     close: "إغلاق اسأل أنس",
-    subtitle: "طريقة مختصرة لمعرفة كيف أصوغ المشكلات، وأتخذ القرارات، وأتحدّث عن العمل.",
+    subtitle: "حابب تعرف أكثر عن شغلي أو طريقتي في حل مشكلات المنتجات؟ اسألني.",
     questions: "أسئلة مقترحة",
-    explore: "اقرأ دراسة الحالة",
-    related: "استكشف مشروعاً ذا صلة",
+    explore: "عرض دراسة الحالة",
+    related: "اقرأ المزيد",
     more: "اسأل عن شيء آخر",
     placeholder: "أو اكتب سؤالك",
-    fallback: "يمكنني أن أحدثك عن خبرتي، أو عن دراسة حالة، أو عن طريقة تعاملي مع مشكلة جديدة، أو عن الولاء والبيانات والتجارب. اختر سؤالاً، أو اكتب سؤالك كما تشاء.",
+    fallback: "أقدر أحكي عن أماكن اشتغلت فيها، أو عن دراسة الاستبدال، أو عن كيف أبدأ مشكلة، أو عن البحث والتجارب. اختَر سؤالًا، أو اكتب سؤالك.",
   },
 };
 

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 import { clamp } from "@/lib/utils";
+import { CollaboratorCursor } from "./CollaboratorCursor";
 import { useI18n } from "./LanguageProvider";
 
 type PhraseSet = readonly string[];
@@ -30,7 +31,7 @@ type Agent = {
   tagW: number;
   tagH: number;
   labelW: number;
-  tagLeft: boolean;
+  labelH: number;
   heading: number;
   tempo: number;
   kind: "travel" | "nudge";
@@ -61,11 +62,12 @@ const MOBILE: { id: Id; x: number; y: number }[] = [
   { id: "green", x: 0.14, y: 0.78 },
 ];
 
-const POINTER = 12;
-const TAG_GAP = 12;
-const TAG_OFFSET_Y = 8;
-const CLOSE_MS = 480;
-const OPEN_MS = 480;
+const POINTER_W = 18;
+const POINTER_H = 20;
+const TAG_LEFT = 16;
+const TAG_TOP = 18;
+const CLOSE_MS = 280;
+const OPEN_MS = 280;
 const CLOSED_WAIT = { min: 4800, extra: 1400 };
 const PHRASE_HOLD = { min: 4200, extra: 1800 };
 const SEPARATION = 24;
@@ -95,15 +97,26 @@ function boxesOverlap(a: Box, b: Box, pad = 0) {
   return !(a.right + pad < b.left || a.left - pad > b.right || a.bottom + pad < b.top || a.top - pad > b.bottom);
 }
 
-function agentBox(x: number, y: number, tagW: number, tagH: number, tagLeft: boolean): Box {
-  const tagX = tagLeft ? x - TAG_GAP - tagW : x + TAG_GAP;
-  const tagY = y + TAG_OFFSET_Y;
+function agentBox(x: number, y: number, tagW: number, tagH: number): Box {
+  if (tagW <= 0) {
+    return { left: x, right: x + POINTER_W, top: y, bottom: y + POINTER_H };
+  }
+  const tagX = x + TAG_LEFT;
+  const tagY = y + TAG_TOP;
   return {
-    left: Math.min(x, tagX),
-    right: Math.max(x + POINTER, tagX + tagW),
-    top: Math.min(y, tagY),
-    bottom: Math.max(y + POINTER, tagY + tagH),
+    left: x,
+    right: Math.max(x + POINTER_W, tagX + tagW),
+    top: y,
+    bottom: Math.max(y + POINTER_H, tagY + Math.max(tagH, 0)),
   };
+}
+
+function maxCursorX(playRight: number, tagW: number) {
+  return playRight - Math.max(POINTER_W, TAG_LEFT + Math.max(tagW, 0));
+}
+
+function maxCursorY(playBottom: number, tagH: number) {
+  return playBottom - Math.max(POINTER_H, TAG_TOP + Math.max(tagH, 0));
 }
 
 function collectWalls(): Box[] {
@@ -112,15 +125,6 @@ function collectWalls(): Box[] {
     const pad = el.id === "site-header" ? 12 : 18;
     return { left: r.left - pad, right: r.right + pad, top: r.top - pad, bottom: r.bottom + pad };
   });
-}
-
-function preferTagLeft(x: number, tagW: number, width: number) {
-  const pad = 8;
-  const fitsLeft = x - TAG_GAP - tagW >= pad;
-  const fitsRight = x + TAG_GAP + tagW <= width - pad;
-  if (fitsLeft && !fitsRight) return true;
-  if (fitsRight && !fitsLeft) return false;
-  return x < width / 2;
 }
 
 function playArea(hero: HTMLElement, compact: boolean): Box {
@@ -145,15 +149,7 @@ function hitsWall(box: Box, walls: Box[]) {
 }
 
 function measureTag(tag: HTMLElement) {
-  const prevW = tag.style.width;
-  const prevH = tag.style.height;
-  tag.style.width = "max-content";
-  tag.style.height = "fit-content";
-  const w = tag.offsetWidth;
-  const h = tag.offsetHeight;
-  tag.style.width = prevW;
-  tag.style.height = prevH;
-  return { w, h };
+  return { w: tag.offsetWidth, h: tag.offsetHeight };
 }
 
 function travelRange(compact: boolean, attempt: number) {
@@ -168,14 +164,11 @@ function pointClear(
   play: Box,
   walls: Box[],
   occupied: Box[],
-  width: number,
   minDist: number,
 ) {
   const dist = Math.hypot(x - agent.x, y - agent.y);
   if (dist < minDist) return false;
-  const span = Math.max(agent.tagW, agent.labelW);
-  const tagLeft = preferTagLeft(x, span, width);
-  const box = agentBox(x, y, span, agent.tagH, tagLeft);
+  const box = agentBox(x, y, Math.max(agent.tagW, agent.labelW), Math.max(agent.tagH, agent.labelH));
   if (!insidePlay(box, play)) return false;
   if (hitsWall(box, walls)) return false;
   if (occupied.some((other) => boxesOverlap(box, other, SEPARATION))) return false;
@@ -190,14 +183,13 @@ function fitLeg(
   play: Box,
   walls: Box[],
   occupied: Box[],
-  width: number,
   minDist: number,
 ) {
   for (let i = 0; i < 8; i++) {
     const t = 1 - i * 0.07;
     const px = agent.x + (x - agent.x) * t;
     const py = agent.y + (y - agent.y) * t;
-    if (pointClear(px, py, agent, play, walls, occupied, width, minDist * 0.9)) {
+    if (pointClear(px, py, agent, play, walls, occupied, minDist * 0.9)) {
       return { x: px, y: py };
     }
   }
@@ -225,8 +217,8 @@ function planMove(
   kind: Agent["kind"],
 ) {
   const occupied = others.filter((other) => other !== agent).flatMap((other) => [
-    agentBox(other.x, other.y, other.tagW, other.tagH, preferTagLeft(other.x, other.tagW, width)),
-    agentBox(other.toX, other.toY, other.tagW, other.tagH, preferTagLeft(other.toX, other.tagW, width)),
+    agentBox(other.x, other.y, Math.max(other.tagW, other.labelW), Math.max(other.tagH, other.labelH)),
+    agentBox(other.toX, other.toY, Math.max(other.tagW, other.labelW), Math.max(other.tagH, other.labelH)),
   ]);
 
   if (kind === "nudge") {
@@ -237,7 +229,7 @@ function planMove(
       const dist = min + rand() * (max - min);
       const x = agent.x + Math.cos(heading) * dist;
       const y = agent.y + Math.sin(heading) * dist;
-      const fitted = fitLeg(agent, x, y, play, walls, occupied, width, min);
+      const fitted = fitLeg(agent, x, y, play, walls, occupied, min);
       if (!fitted) continue;
       return curve(agent, fitted.x, fitted.y, heading, 2 + rand() * 4);
     }
@@ -253,7 +245,7 @@ function planMove(
     const dist = min + rand() * (max - min);
     const x = agent.x + Math.cos(heading) * dist;
     const y = agent.y + Math.sin(heading) * dist;
-    const fitted = fitLeg(agent, x, y, play, walls, occupied, width, min);
+    const fitted = fitLeg(agent, x, y, play, walls, occupied, min);
     if (!fitted) continue;
     const landed = Math.atan2(fitted.y - agent.y, fitted.x - agent.x);
     return curve(agent, fitted.x, fitted.y, landed, bow);
@@ -275,7 +267,7 @@ function planMove(
     const y = band.y0 + rand() * span;
     const reach = Math.min(compact ? 180 : width * 0.42, play.right - play.left - 24);
     const x = leftSide ? play.left + 10 + rand() * reach : play.right - 10 - rand() * reach;
-    if (!pointClear(x, y, agent, play, walls, occupied, width, min * 0.85)) continue;
+    if (!pointClear(x, y, agent, play, walls, occupied, min * 0.85)) continue;
     const heading = Math.atan2(y - agent.y, x - agent.x);
     return curve(agent, x, y, heading, bow);
   }
@@ -305,9 +297,8 @@ function beginMove(agent: Agent, next: { x: number; y: number; cx: number; cy: n
   agent.moveDur = dur;
 }
 
-function clearSpot(x: number, y: number, tagW: number, tagH: number, walls: Box[], play: Box, width: number) {
-  const tagLeft = preferTagLeft(x, tagW, width);
-  const box = agentBox(x, y, tagW, tagH, tagLeft);
+function clearSpot(x: number, y: number, tagW: number, tagH: number, walls: Box[], play: Box) {
+  const box = agentBox(x, y, tagW, tagH);
   return insidePlay(box, play) && !hitsWall(box, walls);
 }
 
@@ -330,25 +321,14 @@ function escapeWalls(x: number, y: number, tagW: number, tagH: number, walls: Bo
     }
   }
   for (const spot of candidates) {
-    const px = clamp(spot.x, play.left + 8, play.right - 8);
-    const py = clamp(spot.y, play.top + 8, play.bottom - 8);
-    if (clearSpot(px, py, tagW, tagH, walls, play, width)) return { x: px, y: py };
+    const px = clamp(spot.x, play.left + 8, maxCursorX(play.right, tagW) - 8);
+    const py = clamp(spot.y, play.top + 8, maxCursorY(play.bottom, tagH) - 8);
+    if (clearSpot(px, py, tagW, tagH, walls, play)) return { x: px, y: py };
   }
-  return { x: clamp(x, play.left + 8, play.right - 8), y: clamp(y, play.top + 8, play.bottom - 8) };
-}
-
-function PointerMark() {
-  return (
-    <svg viewBox="0 0 16 16" className="collab-pointer" aria-hidden>
-      <path
-        d="M1.15 1.05 1.15 12.55 4.85 9.15 7.7 14.35 9.55 13.4 6.7 8.25 11.35 8.05Z"
-        fill="currentColor"
-        stroke="var(--background)"
-        strokeWidth="0.7"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return {
+    x: clamp(x, play.left + 8, maxCursorX(play.right, tagW) - 8),
+    y: clamp(y, play.top + 8, maxCursorY(play.bottom, tagH) - 8),
+  };
 }
 
 export function Collaborators() {
@@ -427,7 +407,7 @@ export function Collaborators() {
           tagW: prev?.tagW ?? 96,
           tagH: prev?.tagH ?? 22,
           labelW: prev?.labelW ?? 96,
-          tagLeft: preferTagLeft(x, prev?.tagW ?? 96, window.innerWidth),
+          labelH: prev?.labelH ?? 22,
           heading: prev?.heading ?? rand() * Math.PI * 2,
           tempo: prev?.tempo ?? 0.9 + rand() * 0.2,
           kind: "travel" as const,
@@ -444,17 +424,13 @@ export function Collaborators() {
         el.style.setProperty("--collab", agent.color);
         const phrase = el.querySelector<HTMLElement>("[data-phrase]");
         const tag = el.querySelector<HTMLElement>(".collab-tag");
-        if (phrase) {
-          phrase.textContent = agent.phrases[agent.phrase] ?? agent.phrases[0] ?? "";
-          phrase.classList.remove("is-exit", "is-enter");
-        }
+        if (phrase) phrase.textContent = agent.phrases[agent.phrase] ?? agent.phrases[0] ?? "";
         if (tag && phrase) {
-          tag.style.width = "";
-          tag.style.height = "";
           const size = measureTag(tag);
           agent.tagW = size.w;
           agent.tagH = size.h;
           agent.labelW = size.w;
+          agent.labelH = size.h;
         }
         const clear = escapeWalls(
           agent.x,
@@ -477,8 +453,7 @@ export function Collaborators() {
         agent.cy = clear.y;
         agent.homeX = clear.x;
         agent.homeY = clear.y;
-        agent.tagLeft = preferTagLeft(clear.x, agent.tagW, window.innerWidth);
-        el.classList.toggle("is-flip", agent.tagLeft);
+        el.classList.remove("is-flip");
         el.style.transform = `translate3d(${agent.x}px, ${agent.y}px, 0)`;
       });
     };
@@ -488,19 +463,8 @@ export function Collaborators() {
     const clearSwap = (agent: Agent, el: HTMLElement) => {
       agent.swapGen += 1;
       agent.swapping = false;
-      const phrase = el.querySelector<HTMLElement>("[data-phrase]");
       const tag = el.querySelector<HTMLElement>(".collab-tag");
-      phrase?.classList.remove("is-exit", "is-enter");
-      tag?.classList.remove("is-hidden");
-      if (tag) {
-        tag.style.display = "";
-        tag.style.width = "";
-        tag.style.height = "";
-        tag.style.opacity = "";
-        tag.style.padding = "";
-        tag.style.borderWidth = "";
-        tag.style.boxShadow = "";
-      }
+      tag?.classList.remove("is-hidden", "is-closing", "is-opening");
     };
 
     const swapPhrase = (agent: Agent, el: HTMLElement, now: number) => {
@@ -512,21 +476,12 @@ export function Collaborators() {
       agent.swapping = true;
       const gen = agent.swapGen + 1;
       agent.swapGen = gen;
-      const from = measureTag(tag);
-      tag.style.width = `${from.w}px`;
-      tag.style.height = `${from.h}px`;
-      tag.style.opacity = "1";
-      phrase.classList.add("is-exit");
-      void tag.offsetWidth;
-      tag.style.width = "0px";
-      tag.style.height = "0px";
-      tag.style.opacity = "0";
-      tag.style.padding = "0px";
-      tag.style.borderWidth = "0px";
-      tag.style.boxShadow = "none";
+      tag.classList.remove("is-opening", "is-hidden");
+      tag.classList.add("is-closing");
 
       window.setTimeout(() => {
         if (agent.swapGen !== gen) return;
+        tag.classList.remove("is-closing");
         tag.classList.add("is-hidden");
         agent.tagW = 0;
         agent.tagH = 0;
@@ -535,38 +490,19 @@ export function Collaborators() {
           if (agent.swapGen !== gen) return;
           agent.phrase = (agent.phrase + 1) % agent.phrases.length;
           phrase.textContent = agent.phrases[agent.phrase] ?? "";
-          phrase.classList.remove("is-exit", "is-enter");
           tag.classList.remove("is-hidden");
-          tag.style.display = "block";
-          tag.style.width = "max-content";
-          tag.style.height = "fit-content";
-          tag.style.padding = "";
-          tag.style.borderWidth = "";
-          tag.style.boxShadow = "";
-          tag.style.opacity = "0";
+          tag.classList.add("is-opening");
           const next = measureTag(tag);
-          const startW = Math.max(0, Math.round(next.w * 0.84));
-          const startH = Math.max(0, Math.round(next.h * 0.84));
-          tag.style.width = `${startW}px`;
-          tag.style.height = `${startH}px`;
-          void tag.offsetWidth;
-          phrase.classList.add("is-enter");
-          tag.style.width = `${next.w}px`;
-          tag.style.height = `${next.h}px`;
-          tag.style.opacity = "1";
-          void phrase.offsetWidth;
-          phrase.classList.remove("is-enter");
           agent.tagW = next.w;
           agent.tagH = next.h;
           agent.labelW = next.w;
+          agent.labelH = next.h;
+          void tag.offsetWidth;
+          tag.classList.remove("is-opening");
           agent.phraseUntil = performance.now() + PHRASE_HOLD.min + rand() * PHRASE_HOLD.extra;
 
           window.setTimeout(() => {
             if (agent.swapGen !== gen) return;
-            tag.style.width = "";
-            tag.style.height = "";
-            tag.style.opacity = "";
-            tag.style.display = "";
             agent.swapping = false;
           }, OPEN_MS);
         }, CLOSED_WAIT.min + rand() * CLOSED_WAIT.extra);
@@ -636,8 +572,6 @@ export function Collaborators() {
           swapPhrase(agent, el, now);
         }
 
-        agent.tagLeft = preferTagLeft(agent.x, Math.max(agent.tagW, agent.labelW), width);
-        el.classList.toggle("is-flip", agent.tagLeft);
         el.style.transform = `translate3d(${agent.x}px, ${agent.y}px, 0)`;
       });
 
@@ -685,8 +619,10 @@ export function Collaborators() {
         const home = placeHome(seat);
         agent.homeX = home.x;
         agent.homeY = home.y;
-        agent.x = clamp(agent.x, play.left, play.right);
-        agent.y = clamp(agent.y, play.top, play.bottom);
+        const span = Math.max(agent.tagW, agent.labelW);
+        const spanH = Math.max(agent.tagH, agent.labelH);
+        agent.x = clamp(agent.x, play.left, maxCursorX(play.right, span));
+        agent.y = clamp(agent.y, play.top, maxCursorY(play.bottom, spanH));
         agent.toX = agent.x;
         agent.toY = agent.y;
         agent.x0 = agent.x;
@@ -721,7 +657,7 @@ export function Collaborators() {
     <div ref={layer} aria-hidden="true" className="pointer-events-none">
       {(["blue", "red", "green", "yellow"] as const).map((id) => (
         <div key={id} data-collab={id} className="collab">
-          <PointerMark />
+          <CollaboratorCursor />
           <span className="collab-tag">
             <span data-phrase className="collab-tag-phrase">
               {sets[id][0]}

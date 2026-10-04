@@ -73,7 +73,18 @@ export function ExperienceTimeline({
                   "[@media(hover:none)]:grid-rows-[1fr] [@media(hover:none)]:opacity-100",
                 )}
               >
-                <p className="min-h-0 overflow-hidden text-body text-muted md:pt-3">{role.summary}</p>
+                <div className="min-h-0 overflow-hidden md:pt-3">
+                  <p className="text-body text-muted">{role.detail}</p>
+                  {role.highlights.length > 0 ? (
+                    <ul className="mt-[var(--space-4)] flex flex-col gap-[var(--space-2)] text-small text-muted">
+                      {role.highlights.map((item) => (
+                        <li key={item.value}>
+                          <span className="font-medium text-foreground tabular-nums">{item.value}</span> {item.label}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
               </div>
             </div>
           </li>

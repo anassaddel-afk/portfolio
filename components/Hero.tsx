@@ -75,7 +75,7 @@ function InlinePortrait() {
           timer.current = window.setTimeout(() => setOpen(false), TOUCH_DISMISS_MS);
         }
       }}
-      className="group relative mx-[0.04em] inline-block h-[0.74em] w-[1.3em] -translate-y-[0.04em] rounded-full align-middle"
+      className="group relative mx-[0.04em] inline-block h-[1.05em] w-[1.3em] -translate-y-[0.06em] rounded-full align-middle"
     >
       <span className="absolute inset-0 overflow-hidden rounded-full bg-surface">
         <Image

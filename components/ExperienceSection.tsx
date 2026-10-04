@@ -2,7 +2,6 @@ import { getExperience } from "@/data/experience";
 import { getDictionary } from "@/lib/locale";
 import { ExperienceTimeline } from "./ExperienceTimeline";
 import { MagneticButton } from "./MagneticButton";
-import { ScrollRevealText } from "./ScrollRevealText";
 import { SectionHeader } from "./SectionHeader";
 
 type ExperienceSectionProps = { index?: string; showLink?: boolean; id?: string; limit?: number };
@@ -15,16 +14,7 @@ export async function ExperienceSection({ index, showLink = true, id = "experien
   return (
     <section id={id} className="section-y border-t border-border">
       <div className="container-x">
-        <SectionHeader
-          index={index}
-          label={t.experience.label}
-          title={t.experience.title}
-          aside={
-            <ScrollRevealText as="p" className="text-lead text-muted">
-              {t.experience.intro}
-            </ScrollRevealText>
-          }
-        />
+        <SectionHeader index={index} label={t.experience.label} title={t.experience.title} />
 
         <ExperienceTimeline roles={roles} opensNewTab={t.experience.opensNewTab} showRole={limit == null} />
 

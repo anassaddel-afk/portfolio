@@ -621,8 +621,8 @@ const content: Localized<Project[]> = [
       { en: "Redemption Experience", ar: "استبدال" },
     ],
     summary: {
-      en: "Completing the loyalty cycle from earning to redemption.",
-      ar: "إكمال دورة الولاء من الكسب إلى الاستبدال.",
+      en: "Members could earn points, but spending them was not a clear path. This study designs the redemption that closes the loop.",
+      ar: "كان الأعضاء يكسبون النقاط، لكن إنفاقها لم يكن مسارًا واضحًا. هذه الدراسة تصمّم الاستبدال الذي يغلق الدورة.",
     },
     card: {
       name: "Redemption",
