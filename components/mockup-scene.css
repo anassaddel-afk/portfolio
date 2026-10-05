@@ -1,0 +1,194 @@
+/* Recording stage. Scoped to /mockup. The homepage tokens stay on the real page. */
+
+.mockup-scene {
+  --mockup-paper: #f4efe6;
+  --mockup-shell: #3a3733;
+  --mockup-shell-edge: rgb(255 250 242 / 0.16);
+  --mockup-bezel: #141312;
+  --mockup-key: #2a2724;
+  --mockup-deck: #514e49;
+  --mockup-lip: #3a3733;
+  display: grid;
+  height: 100svh;
+  place-items: center;
+  overflow: hidden;
+  background: var(--mockup-paper);
+  color-scheme: light;
+}
+
+html:has(.mockup-scene),
+html:has(.mockup-scene) body {
+  height: 100%;
+  overflow: hidden;
+  background: #f4efe6;
+  color-scheme: light;
+}
+
+html:has(.mockup-scene) nextjs-portal {
+  display: none !important;
+}
+
+.mockup-camera {
+  width: min(1160px, 74vw, calc((100svh - 40px) * 1.36));
+  transform-origin: center center;
+}
+
+.mockup-camera[data-state="live"] {
+  will-change: transform;
+  animation: mockup-push var(--scene-ms, 8s) cubic-bezier(0.45, 0, 0.55, 1) both;
+}
+
+.mockup-camera[data-state="held"] {
+  transform: scale(1.035);
+  will-change: auto;
+}
+
+.mockup-laptop {
+  opacity: 0;
+}
+
+.mockup-laptop[data-state="live"] {
+  animation: mockup-enter 1.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mockup-laptop[data-state="still"] {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes mockup-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mockup-push {
+  0%,
+  18.75% {
+    transform: scale(1);
+  }
+  68.75%,
+  100% {
+    transform: scale(1.035);
+  }
+}
+
+.mockup-lid {
+  margin-inline: 22px;
+  padding: 7px;
+  border-radius: 16px 16px 7px 7px;
+  background: var(--mockup-shell);
+  box-shadow: inset 0 1px 0 var(--mockup-shell-edge);
+}
+
+.mockup-bezel {
+  position: relative;
+  padding: 13px 8px 8px;
+  border-radius: 10px 10px 4px 4px;
+  background: var(--mockup-bezel);
+}
+
+.mockup-cam {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: #3c3a36;
+  box-shadow: inset 0 0 0 1px #0c0b0a;
+}
+
+.mockup-screen {
+  position: relative;
+  aspect-ratio: 1440 / 900;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--mockup-paper);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.5);
+  container-type: size;
+}
+
+.mockup-screen iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  background: var(--mockup-paper);
+  transform-origin: 0 0;
+  transform: scale(calc(100cqw / 1440px));
+  pointer-events: none;
+}
+
+.mockup-base {
+  position: relative;
+  height: 96px;
+  border-radius: 3px 3px 16px 16px;
+  background: var(--mockup-deck);
+  box-shadow:
+    inset 0 1px 0 rgb(255 250 242 / 0.18),
+    inset 0 -12px 0 var(--mockup-lip);
+}
+
+.mockup-keys {
+  display: block;
+  width: calc(100% - 64px);
+  height: 52px;
+  margin: 9px auto 0;
+  fill: var(--mockup-key);
+}
+
+.mockup-trackpad {
+  display: block;
+  width: 18%;
+  height: 16px;
+  margin: 7px auto 0;
+  border-radius: 4px;
+  background: #3c3935;
+  box-shadow: inset 0 0 0 1px rgb(255 250 242 / 0.08);
+}
+
+.mockup-shadow {
+  width: 62%;
+  height: 12px;
+  margin: 16px auto 0;
+  border-radius: 50%;
+  background: rgb(58 44 30 / 0.13);
+  box-shadow: 0 14px 28px 8px rgb(58 44 30 / 0.1);
+}
+
+@media (max-width: 767px) {
+  .mockup-camera {
+    width: min(100% - 28px, 560px);
+  }
+
+  .mockup-lid {
+    margin-inline: 10px;
+  }
+
+  .mockup-keys,
+  .mockup-trackpad {
+    display: none;
+  }
+
+  .mockup-base {
+    height: 22px;
+    box-shadow: inset 0 -8px 0 var(--mockup-lip);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mockup-laptop,
+  .mockup-camera {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1;
+    will-change: auto;
+  }
+}

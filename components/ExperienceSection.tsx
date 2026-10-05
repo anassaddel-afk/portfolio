@@ -16,7 +16,12 @@ export async function ExperienceSection({ index, showLink = true, id = "experien
       <div className="container-x">
         <SectionHeader index={index} label={t.experience.label} title={t.experience.title} />
 
-        <ExperienceTimeline roles={roles} opensNewTab={t.experience.opensNewTab} showRole={limit == null} />
+        <ExperienceTimeline
+          roles={roles}
+          opensNewTab={t.experience.opensNewTab}
+          showRole={limit == null}
+          freelanceLabel={t.experience.freelance}
+        />
 
         {showLink ? (
           <div className="mt-12 flex justify-end">

@@ -13,6 +13,8 @@ export type Role = {
   detail: string;
   highlights: RoleHighlight[];
   focus: string[];
+  /** Project work, not a staff role. Shown as small metadata beside the date. */
+  freelance?: boolean;
   href?: string;
 };
 
@@ -29,6 +31,7 @@ type Experience = {
 };
 
 const seniorPD = { en: "Senior Product Designer", ar: "مصمم منتجات أول" };
+const freelanceNote = { en: "Freelance", ar: "عمل مستقل" };
 const egypt = { en: "Egypt", ar: "مصر" };
 const loyalty = { en: "Loyalty", ar: "الولاء" };
 
@@ -70,6 +73,7 @@ const content: Localized<Experience> = {
       company: "Waitery",
       period: "2025 — 2026",
       role: seniorPD,
+      freelance: true,
       location: { en: "Canada · Remote", ar: "كندا · عن بُعد" },
       summary: {
         en: "Improved QR ordering and checkout: 16% less time to complete an order, 18% less checkout drop-off, and 12% higher average order value.",
@@ -100,6 +104,7 @@ const content: Localized<Experience> = {
       company: "Blue Ribbon",
       period: "2023 — 2025",
       role: seniorPD,
+      freelance: true,
       location: egypt,
       summary: {
         en: "Designed an early digital sports club experience in MENA, across 14+ features. Nearly 90% of members used the app in its first quarter. The design system then supported 3+ more club apps.",
@@ -179,8 +184,8 @@ const content: Localized<Experience> = {
     { name: "Resal Platform", context: "Resal", year: "2026", href: "https://giftcards.resal.me/en" },
     { name: "Resal", context: "Resal", year: "2025", href: "https://www.resal.me/" },
     { name: "Resal Merchants", context: "Resal", year: "2025", href: "https://www.resal.me/resal-loyalty/" },
-    { name: "Waitery", context: { en: "B2B merchant platform", ar: "منصة للتجّار (B2B)" }, year: "2025", href: "https://waitery.ca/" },
-    { name: "KODE Club", context: "Blue Ribbon", year: "2025", href: "https://apps.apple.com/eg/app/kode-sports-club/id1603263204" },
+    { name: "Waitery", context: freelanceNote, year: "2025", href: "https://waitery.ca/" },
+    { name: "KODE Club", context: freelanceNote, year: "2025", href: "https://apps.apple.com/eg/app/kode-sports-club/id1603263204" },
     { name: "C-Cubed", context: "Dsquares", year: "2024", href: "https://dsquares.com/c-cubed/" },
     { name: "Priceless", context: "Mastercard · Dsquares", year: "2024" },
     { name: "Mobilawy", context: "Mobil 1 · Dsquares", year: "2023" },

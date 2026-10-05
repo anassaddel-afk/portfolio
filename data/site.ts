@@ -21,7 +21,7 @@ export const site = {
   },
 
   nav: [
-    { id: "work", href: "/#work" },
+    { id: "work", href: "/work" },
     { id: "about", href: "/#about" },
     { id: "experience", href: "/experience" },
     { id: "contact", href: "/#contact" },

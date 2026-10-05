@@ -7,6 +7,7 @@
 export function Atmosphere() {
   return (
     <div aria-hidden className="pointer-events-none">
+      <span className="atmosphere-dots" />
       <span className="atmosphere-glow" />
       <span className="atmosphere-grain" />
     </div>

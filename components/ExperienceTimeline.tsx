@@ -9,10 +9,12 @@ export function ExperienceTimeline({
   roles,
   opensNewTab,
   showRole = true,
+  freelanceLabel,
 }: {
   roles: Role[];
   opensNewTab: string;
   showRole?: boolean;
+  freelanceLabel: string;
 }) {
   return (
     <>
@@ -28,7 +30,9 @@ export function ExperienceTimeline({
               transition={{ duration: 1.2, ease: EASE_OUT, delay: i * 0.05 }}
             />
             <div className="grid grid-cols-1 gap-y-3 py-8 transition-colors duration-500 md:grid-cols-12 md:gap-x-[var(--gutter)] md:py-10">
-              <p className="label pt-2 tabular-nums text-muted md:col-span-2">{role.period}</p>
+              <p className="label pt-2 text-muted md:col-span-2">
+                <span className="tabular-nums">{role.period}</span>
+              </p>
 
               <div className="md:col-span-4">
                 {role.href ? (
@@ -57,7 +61,12 @@ export function ExperienceTimeline({
 
               <p className="text-body md:col-span-3 md:pt-1">
                 {showRole ? role.role : null}
-                <span className={showRole ? "block text-small text-muted" : "text-small text-muted"}>{role.location}</span>
+                {role.freelance ? (
+                  <span className="mt-1 block text-small text-muted">{freelanceLabel}</span>
+                ) : null}
+                <span className={showRole || role.freelance ? "block text-small text-muted" : "text-small text-muted"}>
+                  {role.location}
+                </span>
               </p>
 
               <ul className="label hidden flex-wrap justify-end gap-x-3 gap-y-1 pt-2 text-muted md:col-span-3 md:flex">

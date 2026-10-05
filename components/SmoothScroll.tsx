@@ -10,7 +10,8 @@ export function SmoothScroll() {
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reduce.matches) return;
+    const embedded = new URLSearchParams(window.location.search).get("embed") === "mockup";
+    if (reduce.matches || embedded) return;
 
     const instance = new Lenis({
       autoRaf: true,

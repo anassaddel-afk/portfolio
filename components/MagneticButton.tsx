@@ -24,7 +24,8 @@ const styles = {
 
 export function MagneticButton({ href, children, variant = "solid", external, className, onClick }: Props) {
   const Icon = external ? ArrowUpRight : ArrowRight;
-  const isExternal = external || href.startsWith("mailto:") || href.startsWith("http");
+  const isDocument = href.endsWith(".pdf");
+  const isExternal = external || isDocument || href.startsWith("mailto:") || href.startsWith("http");
 
   const content = (
     <>
@@ -54,7 +55,7 @@ export function MagneticButton({ href, children, variant = "solid", external, cl
           href={href}
           className={cls}
           onClick={onClick}
-          {...(href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
+          {...(href.startsWith("http") || isDocument ? { target: "_blank", rel: "noreferrer" } : {})}
         >
           {content}
         </a>

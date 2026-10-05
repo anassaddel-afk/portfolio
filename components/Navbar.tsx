@@ -97,7 +97,7 @@ export function Navbar() {
               compact ? "h-14 px-3 md:px-5" : "h-[var(--nav-h)] px-0",
             )}
           >
-            <Link href="/" onClick={onHome} aria-label={t.nav.home} className="label flex h-11 items-center font-medium text-(length:--fs-nav)">
+            <Link href="/" onClick={onHome} aria-label={t.nav.home} className="site-name label flex h-11 items-center font-medium text-(length:--fs-nav)">
               {t.name}
             </Link>
 
@@ -202,7 +202,7 @@ function MobileMenu({ open, onClose, active, onNav, onHome }: MobileMenuProps) {
           transition={{ duration: 0.6, ease: EASE_IN_OUT }}
         >
           <div className="container-x flex h-[var(--nav-h)] items-center justify-between">
-            <Link href="/" onClick={onHome} className="label flex h-11 items-center text-(length:--fs-nav) font-medium">
+            <Link href="/" onClick={onHome} className="site-name label flex h-11 items-center text-(length:--fs-nav) font-medium">
               {t.name}
             </Link>
             <button ref={closeRef} type="button" onClick={onClose} className="label flex h-11 items-center px-2 text-(length:--fs-nav)">

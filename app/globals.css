@@ -76,14 +76,14 @@
   --guide-mark: #6a6156;
   --grain-opacity: 0.028;
   --grain-blend: multiply;
+  --canvas-dot: rgb(92 84 74 / 0.13);
 
   /* Typography — families */
   --font-latin: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-thmanyah: "Thmanyah", var(--font-plex-arabic), var(--font-latin);
-  --font-thmanyah-display: "Thmanyah Display", "Thmanyah", var(--font-plex-arabic), var(--font-latin);
   --font-body: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-body);
-  --font-label: var(--font-geist-mono), ui-monospace, monospace;
+  --font-label: var(--font-body);
   --font-features: "ss01", "cv11";
 
   /* Collaborator accents — distinct from the orange, still quiet */
@@ -172,14 +172,13 @@
 }
 
 /*
-  Arabic typography — Thmanyah (ثمانية).
-  Sans for UI / body; Serif Display for Hero and section titles.
+  Arabic typography — one Thmanyah face for every Arabic string.
   IBM Plex Sans Arabic remains a shaping fallback for any missing glyphs.
-  Self-hosted via next/font/local so visitors never install the family.
+  Latin brand names fall through to Geist.
 */
 html[lang="ar"] {
   --font-body: var(--font-thmanyah);
-  --font-display: var(--font-thmanyah-display);
+  --font-display: var(--font-thmanyah);
   --font-label: var(--font-thmanyah);
   --font-features: normal;
   word-spacing: 0.06em;
@@ -260,6 +259,7 @@ html[lang="ar"] {
   --guide-mark: #b0bac8;
   --grain-opacity: 0.022;
   --grain-blend: overlay;
+  --canvas-dot: rgb(156 166 180 / 0.15);
 
   --collab-red: #e06b64;
   --collab-green: #3aaa78;
@@ -453,6 +453,18 @@ html.has-cursor * {
   cursor: none !important;
 }
 
+/* Laptop embed only. The public homepage never sets this attribute. */
+html[data-embed="mockup"] {
+  scrollbar-width: none;
+  scroll-behavior: auto !important;
+}
+html[data-embed="mockup"]::-webkit-scrollbar {
+  display: none;
+}
+html[data-embed="mockup"] nextjs-portal {
+  display: none !important;
+}
+
 /* Language switch: the page fades out, re-renders in the new language, and fades back in */
 #site-header,
 #main,
@@ -526,7 +538,16 @@ html[data-lang-switching] #site-footer {
   display: none;
 }
 
-/* Ambient workspace — grain + collaborator tags */
+/* Ambient workspace — a still canvas dot field, then grain. */
+.atmosphere-dots {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--canvas-dot) 0.7px, transparent 0.85px);
+  background-size: 24px 24px;
+}
+
 .atmosphere-grain {
   position: fixed;
   inset: 0;
@@ -538,9 +559,12 @@ html[data-lang-switching] #site-footer {
   background-size: 160px 160px;
 }
 
-/* Hero CTAs share the site face. The label style is mono; these two should not be. */
-#hero :is(a.cta-hero, a.link-draw) .label {
-  font-family: var(--font-body);
+/* Header name keeps its current mono face. Everything else uses the page font. */
+a.site-name {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+html[lang="ar"] a.site-name {
+  font-family: var(--font-thmanyah);
 }
 
 a.cta-hero {
@@ -754,9 +778,43 @@ a.cta-hero:hover {
   }
 }
 
-/* Home career timeline — station width is a share of the sticky viewport. */
+/* Home career timeline — station width is a share of the sticky viewport.
+   The bottom padding keeps every caption clear of the pinned "View full experience" link. */
+.career-sticky {
+  --career-logo-h: 5.5rem;
+  padding-top: var(--nav-h);
+  padding-bottom: calc(var(--space-6) + 3rem + var(--space-3));
+}
+
 .career-viewport {
   container-type: inline-size;
+  height: calc(var(--career-logo-h) + 7.5rem);
+}
+
+.career-hint {
+  height: var(--space-6);
+}
+
+.career-captions {
+  height: 22rem;
+}
+
+@media (min-width: 768px) {
+  .career-sticky {
+    --career-logo-h: clamp(6.5rem, 17svh, 11rem);
+  }
+
+  .career-viewport {
+    height: calc(var(--career-logo-h) + 8.5rem);
+  }
+
+  .career-hint {
+    height: var(--space-7);
+  }
+
+  .career-captions {
+    height: 18.5rem;
+  }
 }
 
 /* How I Work. Mobile stacks in a narrow column. Desktop keeps the title sticky beside the principles. */
@@ -815,7 +873,7 @@ a.cta-hero:hover {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 5.5rem;
+  height: var(--career-logo-h, 5.5rem);
   overflow: visible;
 }
 
@@ -827,7 +885,7 @@ a.cta-hero:hover {
 
 @media (min-width: 768px) {
   .career-logo-slot {
-    height: 11rem;
+    height: var(--career-logo-h, 11rem);
   }
 
   .career-logo-fit {

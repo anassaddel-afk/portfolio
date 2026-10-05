@@ -1,14 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
-import { AskAnas } from "@/components/AskAnas";
-import { Atmosphere } from "@/components/Atmosphere";
-import { Cursor } from "@/components/Cursor";
-import { Footer } from "@/components/Footer";
 import { LanguageProvider } from "@/components/LanguageProvider";
-import { Navbar } from "@/components/Navbar";
 import { Providers } from "@/components/Providers";
-import { ScrollProgress } from "@/components/ScrollProgress";
-import { SmoothScroll } from "@/components/SmoothScroll";
+import { SiteChrome } from "@/components/SiteChrome";
 import { themeScript } from "@/components/ThemeToggle";
 import { site } from "@/data/site";
 import { directionOf } from "@/lib/i18n";
@@ -90,16 +84,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         </a>
         <LanguageProvider locale={locale}>
           <Providers>
-            <Atmosphere />
-            <SmoothScroll />
-            <ScrollProgress />
-            <Navbar />
-            <main id="main" className="relative z-10">
-              {children}
-            </main>
-            <Footer />
-            <AskAnas />
-            <Cursor />
+            <SiteChrome>{children}</SiteChrome>
           </Providers>
         </LanguageProvider>
       </body>

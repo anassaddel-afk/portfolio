@@ -7,7 +7,7 @@ import { useI18n } from "./LanguageProvider";
 
 type Theme = "light" | "dark";
 
-export const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}var d=document.documentElement;d.classList.toggle('dark',t==='dark');d.setAttribute('data-theme',t);d.style.colorScheme=t}catch(e){}})();`;
+export const themeScript = `(function(){try{var d=document.documentElement;if(/[?&]embed=mockup(?:&|$)/.test(location.search)){d.classList.remove('dark');d.setAttribute('data-theme','light');d.setAttribute('data-embed','mockup');d.style.colorScheme='light';return}var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}d.classList.toggle('dark',t==='dark');d.setAttribute('data-theme',t);d.style.colorScheme=t}catch(e){}})();`;
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { t } = useI18n();

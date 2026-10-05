@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getExperience, sortExperienceByDate } from "@/data/experience";
 import { getDictionary } from "@/lib/locale";
-import { CareerTimeline } from "./CareerTimeline";
+import { CareerTimeline, RoleLine } from "./CareerTimeline";
 import { MagneticButton } from "./MagneticButton";
 
 const logos: Record<string, string> = {
@@ -23,6 +23,7 @@ export async function HomeExperience() {
     period: role.period,
     summary: role.summary,
     highlights: role.highlights,
+    freelance: role.freelance ? copy.freelance : undefined,
     logo: logos[role.company],
     logoAlt: locale === "ar" ? `شعار ${role.company}` : `${role.company} logo`,
   }));
@@ -37,32 +38,36 @@ export async function HomeExperience() {
       </div>
 
       <div className="career-scroll relative">
-      <CareerTimeline roles={journey} />
+      <CareerTimeline roles={journey} hint={copy.keepScrolling} />
 
       <div className="career-static sr-only">
         <ol className="container-x">
           {journey.map((role) => (
             <li key={role.company} className="border-t border-border py-10">
-              <div className="relative mb-[var(--space-5)] h-20 w-48">
-                <div className="absolute inset-2">
+              <div className="career-logo-slot mx-auto w-[11rem] md:w-[16rem]">
+                <div className="career-logo-fit">
                   <Image
                     src={role.logo}
                     alt={role.logoAlt}
                     fill
-                    sizes="176px"
+                    sizes="(min-width: 768px) 216px, 152px"
                     quality={90}
-                    className="career-logo object-contain object-left rtl:object-right"
+                    className="career-logo object-contain object-center"
                   />
                 </div>
               </div>
-              <h3 dir="ltr" className="text-h2 font-medium">
+              <h3
+                dir="ltr"
+                className="mt-[var(--space-4)] text-center text-[clamp(1.25rem,2vw,1.75rem)] leading-none font-medium tracking-[var(--tracking-tight)]"
+              >
                 {role.company}
               </h3>
-              <p className="mt-4 text-lead">{role.role}</p>
-              <p className="mt-2 text-small text-muted tabular-nums">{role.period}</p>
-              <p className="career-copy mt-[var(--space-5)] text-start text-body text-muted">{role.summary}</p>
+              <div className="mt-[var(--space-4)] text-center">
+                <RoleLine role={role.role} period={role.period} freelance={role.freelance} />
+              </div>
+              <p className="career-copy mt-[var(--space-4)] text-center text-body text-muted">{role.summary}</p>
               {role.highlights.length > 0 ? (
-                <ul className="career-copy mt-[var(--space-4)] text-start text-small text-muted">
+                <ul className="career-copy mt-[var(--space-4)] text-center text-small text-muted">
                   {role.highlights.map((item) => (
                     <li key={item.value}>
                       <span className="font-medium text-foreground tabular-nums">{item.value}</span> {item.label}

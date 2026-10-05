@@ -44,7 +44,7 @@ const en = {
 
   hero: {
     label: "Introduction",
-    eyebrow: "Senior digital product designer",
+    eyebrow: "Digital product designer",
     years: "",
     headline: ["I {portrait} design digital products", "and user experiences,", "turning complex problems into"],
     rotating: [
@@ -58,7 +58,7 @@ const en = {
     headlineText:
       "I design digital products and user experiences, turning complex problems into simpler solutions, usable experiences, beautiful interfaces, human-centered products, scalable systems, and measurable outcomes.",
     supporting: "",
-    viewWork: "View work",
+    viewCv: "View My CV",
     letsTalk: "Let's talk",
     scrollDown: "Scroll down",
     curious: "Curious by default —",
@@ -121,6 +121,8 @@ const en = {
     intro: "What I worked on, who I worked with, and which results belong to me, the team, or the company.",
     careerIntro: "A short pass through the products, the problems, and what changed.",
     viewFull: "View full experience",
+    freelance: "Freelance",
+    keepScrolling: "Keep scrolling",
     fullLink: "Full experience & products",
     opensNewTab: "(opens in a new tab)",
   },
@@ -268,7 +270,7 @@ const ar: Dictionary = {
     headlineText:
       "أصمّم المنتجات الرقمية وتجارب المستخدم، وأحوّل المشكلات المعقّدة إلى حلول أبسط، وتجارب أسهل استخداماً، وواجهات أوضح، ومنتجات تضع الناس أولاً، وأنظمة قابلة للتوسّع، ونتائج يمكن قياسها.",
     supporting: "",
-    viewWork: "استعرض الأعمال",
+    viewCv: "عرض سيرتي الذاتية",
     letsTalk: "لنتحدّث",
     scrollDown: "مرّر للأسفل",
     curious: "فضولي بطبعي —",
@@ -331,6 +333,8 @@ const ar: Dictionary = {
     intro: "ما عملت عليه، ومع من، وأي النتائج تعود إليّ أو إلى الفريق أو إلى الشركة.",
     careerIntro: "مرور مختصر على المنتجات، والمشكلات، وما الذي تغيّر.",
     viewFull: "عرض الخبرة كاملة",
+    freelance: "عمل مستقل",
+    keepScrolling: "واصل التمرير",
     fullLink: "الخبرات والمنتجات كاملة",
     opensNewTab: "(يفتح في علامة تبويب جديدة)",
   },

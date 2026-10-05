@@ -192,11 +192,6 @@ export function Hero() {
   const { hero } = t;
   const headingId = useId();
 
-  const toWork = (e: React.MouseEvent) => {
-    e.preventDefault();
-    scrollToTarget("#work");
-  };
-
   return (
     <section
       id="hero"
@@ -237,8 +232,8 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.65 }}
         >
-          <MagneticButton href="/#work" variant="hero" onClick={toWork}>
-            {hero.viewWork}
+          <MagneticButton href={site.links.cv} variant="hero">
+            {hero.viewCv}
           </MagneticButton>
           <MagneticButton href="/#contact" variant="text" onClick={(e) => (e.preventDefault(), scrollToTarget("#contact"))}>
             {hero.letsTalk}

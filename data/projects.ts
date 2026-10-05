@@ -151,7 +151,7 @@ const content: Localized<Project[]> = [
     client: "KODE Club",
     company: "Blue Ribbon",
     year: "2025",
-    role: t.pd,
+    role: t.seniorPD,
     platform: { en: "Mobile", ar: "الجوال" },
     focus: {
       en: "Member experience · Booking · Payments · Access",
@@ -1614,8 +1614,8 @@ const content: Localized<Project[]> = [
           {
             type: "text",
             lead: {
-              en: "At Blue Ribbon, the sports-club products needed one foundation. The system brings components, tokens, patterns and guidelines together so every app is built from the same decisions.",
-              ar: "في Blue Ribbon، احتاجت منتجات النادي الرياضي إلى أساس واحد. يجمع النظام المكوّنات والرموز والأنماط والإرشادات، لتُبنى كل التطبيقات من القرارات نفسها.",
+              en: "The sports-club products needed one foundation. The system brings components, tokens, patterns and guidelines together so every app is built from the same decisions.",
+              ar: "احتاجت منتجات النادي الرياضي إلى أساس واحد. يجمع النظام المكوّنات والرموز والأنماط والإرشادات، لتُبنى كل التطبيقات من القرارات نفسها.",
             },
           },
           {

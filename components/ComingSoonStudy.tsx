@@ -12,7 +12,7 @@ export async function ComingSoonStudy({ project }: { project: Project }) {
   return (
     <article>
       <header className="container-x pb-[var(--space-8)] pt-[calc(var(--nav-h)+var(--space-8))] md:pb-[var(--space-10)] md:pt-[calc(var(--nav-h)+var(--space-10))]">
-        <Link href="/#work" className="group inline-flex h-11 items-center gap-2 text-muted hover:text-foreground">
+        <Link href="/work" className="group inline-flex h-11 items-center gap-2 text-muted hover:text-foreground">
           <ArrowLeft aria-hidden strokeWidth={1.5} className="size-3.5 transition-[translate] group-hover:-nudge-1 rtl:-scale-x-100" />
           {t.caseStudy.allWork}
         </Link>
