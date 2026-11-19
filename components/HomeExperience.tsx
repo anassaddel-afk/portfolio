@@ -38,62 +38,58 @@ export async function HomeExperience() {
       </div>
 
       <div className="career-scroll relative">
-      <CareerTimeline
-        roles={journey}
-        hint={copy.keepScrolling}
-        previousLabel={copy.previousCompany}
-        nextLabel={copy.nextCompany}
-      />
+        <CareerTimeline
+          roles={journey}
+          hint={copy.browseHint}
+          previousLabel={copy.previousCompany}
+          nextLabel={copy.nextCompany}
+        />
 
-      <div className="career-static sr-only">
-        <ol className="container-x">
-          {journey.map((role) => (
-            <li key={role.company} className="border-t border-border py-10">
-              <div className="career-logo-slot mx-auto w-[11rem] md:w-[16rem]">
-                <div className="career-logo-fit">
-                  <Image
-                    src={role.logo}
-                    alt={role.logoAlt}
-                    fill
-                    sizes="(min-width: 768px) 216px, 152px"
-                    quality={90}
-                    className="career-logo object-contain object-center"
-                  />
+        <div className="career-static sr-only">
+          <ol className="container-x">
+            {journey.map((role) => (
+              <li key={role.company} className="border-t border-border py-10">
+                <div className="career-logo-slot mx-auto w-[11rem] md:w-[16rem]">
+                  <div className="career-logo-fit">
+                    <Image
+                      src={role.logo}
+                      alt={role.logoAlt}
+                      fill
+                      sizes="(min-width: 768px) 216px, 152px"
+                      quality={90}
+                      className="career-logo object-contain object-center"
+                    />
+                  </div>
                 </div>
-              </div>
-              <h3
-                dir="ltr"
-                className="mt-[var(--space-4)] text-center text-[clamp(1.25rem,2vw,1.75rem)] leading-none font-medium tracking-[var(--tracking-tight)]"
-              >
-                {role.company}
-              </h3>
-              <div className="mt-[var(--space-4)] text-center">
-                <RoleLine role={role.role} period={role.period} freelance={role.freelance} />
-              </div>
-              <p className="career-copy mt-[var(--space-4)] text-center text-body text-muted">{role.summary}</p>
-              {role.highlights.length > 0 ? (
-                <ul className="career-copy mt-[var(--space-4)] text-center text-small text-muted">
-                  {role.highlights.map((item) => (
-                    <li key={item.value}>
-                      <span className="font-medium text-foreground tabular-nums">{item.value}</span> {item.label}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </li>
-          ))}
-        </ol>
-      </div>
-
-      <div className="career-cta pointer-events-none absolute inset-0 z-10">
-        <div className="sticky top-0 flex h-svh items-end">
-          <div className="pointer-events-auto container-x flex w-full justify-center pb-[var(--space-6)]">
-            <MagneticButton href="/experience" variant="text">
-              {copy.viewFull}
-            </MagneticButton>
-          </div>
+                <h3
+                  dir="ltr"
+                  className="mt-[var(--space-4)] text-center text-[clamp(1.25rem,2vw,1.75rem)] leading-none font-medium tracking-[var(--tracking-tight)]"
+                >
+                  {role.company}
+                </h3>
+                <div className="mt-[var(--space-4)] text-center">
+                  <RoleLine role={role.role} period={role.period} freelance={role.freelance} />
+                </div>
+                <p className="career-copy mt-[var(--space-4)] text-center text-body text-muted">{role.summary}</p>
+                {role.highlights.length > 0 ? (
+                  <ul className="career-copy mt-[var(--space-4)] text-center text-small text-muted">
+                    {role.highlights.map((item) => (
+                      <li key={item.value}>
+                        <span className="font-medium text-foreground tabular-nums">{item.value}</span> {item.label}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </li>
+            ))}
+          </ol>
         </div>
-      </div>
+
+        <div className="career-cta container-x flex justify-center pb-[var(--section-y)] pt-[var(--space-6)]">
+          <MagneticButton href="/experience" variant="text">
+            {copy.viewFull}
+          </MagneticButton>
+        </div>
       </div>
     </section>
   );

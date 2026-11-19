@@ -778,12 +778,10 @@ a.cta-hero:hover {
   }
 }
 
-/* Home career timeline — station width is a share of the sticky viewport.
-   The bottom padding keeps every caption clear of the pinned "View full experience" link. */
-.career-sticky {
+/* Home career timeline — one viewport tall. Arrows move companies; page scroll continues. */
+.career-panel {
   --career-logo-h: 5.5rem;
-  padding-top: var(--nav-h);
-  padding-bottom: calc(var(--space-6) + 3rem + var(--space-3));
+  padding-block: var(--space-6);
 }
 
 .career-viewport {
@@ -800,8 +798,9 @@ a.cta-hero:hover {
 }
 
 @media (min-width: 768px) {
-  .career-sticky {
+  .career-panel {
     --career-logo-h: clamp(6.5rem, 17svh, 11rem);
+    padding-block: var(--space-8);
   }
 
   .career-viewport {
@@ -936,12 +935,6 @@ a.cta-hero:hover {
   }
   .career-stage {
     display: none !important;
-  }
-  .career-cta,
-  .career-cta > div {
-    position: static !important;
-    height: auto !important;
-    pointer-events: auto;
   }
   .career-static {
     position: static !important;
