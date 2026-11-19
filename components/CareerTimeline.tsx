@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { motion, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "motion/react";
+import { scrollToTarget } from "@/lib/scroll";
 
 const HINT_KEY = "experience-timeline-hint";
 
@@ -24,6 +26,8 @@ type CareerTimelineProps = {
   roles: CareerRole[];
   /** One-time hint shown the first time this timeline enters the viewport. */
   hint: string;
+  previousLabel: string;
+  nextLabel: string;
 };
 
 /**
@@ -32,7 +36,7 @@ type CareerTimelineProps = {
  * Logos are keyed marks, themed to foreground monochrome.
  * `roles` is most recent → oldest.
  */
-export function CareerTimeline({ roles, hint }: CareerTimelineProps) {
+export function CareerTimeline({ roles, hint, previousLabel, nextLabel }: CareerTimelineProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const count = roles.length;
@@ -47,11 +51,33 @@ export function CareerTimeline({ roles, hint }: CareerTimelineProps) {
   });
   const line = useTransform(scrollYProgress, (value) => (count < 2 ? 1 : travel(value, count) / (count - 1)));
   const showHint = useTimelineHint(stickyRef, scrollYProgress);
+  const [active, setActive] = useState(0);
+
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    setActive(Math.round(travel(value, count)));
+  });
+
+  const goTo = useCallback(
+    (index: number) => {
+      const node = trackRef.current;
+      if (!node || count < 2) return;
+      const clamped = Math.max(0, Math.min(count - 1, index));
+      const range = node.offsetHeight - window.innerHeight;
+      if (range <= 0) return;
+      const top = node.getBoundingClientRect().top + window.scrollY;
+      scrollToTarget(top + (clamped / (count - 1)) * range);
+      try {
+        sessionStorage.setItem(HINT_KEY, "seen");
+      } catch {
+        /* Private browsing can reject storage. */
+      }
+    },
+    [count],
+  );
 
   return (
     <div
       ref={trackRef}
-      aria-hidden
       className="career-stage relative"
       style={{ height: `calc(${travelVh}vh + 100svh)` }}
     >
@@ -60,7 +86,7 @@ export function CareerTimeline({ roles, hint }: CareerTimelineProps) {
         className="career-sticky sticky top-0 flex h-svh touch-pan-y flex-col items-center justify-center overflow-hidden"
       >
         <div className="relative flex w-full flex-col items-center">
-          <div className="career-viewport relative w-full overflow-hidden">
+          <div aria-hidden className="career-viewport relative w-full overflow-hidden">
             <motion.div style={{ x }} dir="ltr" className="career-track pointer-events-none absolute bottom-[var(--space-3)] left-0 flex h-0">
               <div className="pointer-events-none absolute top-0 right-[calc(var(--station)/2)] left-[calc(var(--station)/2)] h-px bg-border">
                 <motion.div style={{ scaleX: line }} className="h-full origin-left bg-foreground/75" />
@@ -78,12 +104,35 @@ export function CareerTimeline({ roles, hint }: CareerTimelineProps) {
             <span>↓</span>
           </p>
 
-          <div className="career-captions container-x relative w-full">
+          <div aria-hidden className="career-captions container-x relative w-full">
             {roles.map((role, index) => (
               <Caption key={role.company} role={role} index={index} count={count} progress={scrollYProgress} />
             ))}
           </div>
         </div>
+
+        {count > 1 ? (
+          <div className="pointer-events-none absolute inset-x-0 top-[calc(var(--nav-h)+var(--space-3))] bottom-[calc(var(--space-6)+3rem)] z-20 flex items-center justify-between px-[var(--space-3)] md:px-[var(--space-5)]">
+            <button
+              type="button"
+              onClick={() => goTo(active - 1)}
+              disabled={active <= 0}
+              aria-label={previousLabel}
+              className="pointer-events-auto grid size-11 place-items-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur-sm transition-[opacity,border-color,translate] duration-300 hover:border-foreground disabled:pointer-events-none disabled:opacity-0"
+            >
+              <ArrowLeft aria-hidden className="size-4 rtl:-scale-x-100" strokeWidth={1.5} />
+            </button>
+            <button
+              type="button"
+              onClick={() => goTo(active + 1)}
+              disabled={active >= count - 1}
+              aria-label={nextLabel}
+              className="pointer-events-auto grid size-11 place-items-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur-sm transition-[opacity,border-color,translate] duration-300 hover:border-foreground disabled:pointer-events-none disabled:opacity-0"
+            >
+              <ArrowRight aria-hidden className="size-4 rtl:-scale-x-100" strokeWidth={1.5} />
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -38,7 +38,12 @@ export async function HomeExperience() {
       </div>
 
       <div className="career-scroll relative">
-      <CareerTimeline roles={journey} hint={copy.keepScrolling} />
+      <CareerTimeline
+        roles={journey}
+        hint={copy.keepScrolling}
+        previousLabel={copy.previousCompany}
+        nextLabel={copy.nextCompany}
+      />
 
       <div className="career-static sr-only">
         <ol className="container-x">
